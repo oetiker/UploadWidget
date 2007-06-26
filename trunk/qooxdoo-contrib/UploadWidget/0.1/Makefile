@@ -33,7 +33,7 @@
 # Please note that Windows users should always use relative paths.
 # It should end with the last directory. Please omit a trailing slash.
 #
-QOOXDOO_PATH = ../../../external/qooxdoo/trunk
+QOOXDOO_PATH = ../../qooxdoo/qooxdoo-0.7-sdk
 QOOXDOO_URI = ../../$(QOOXDOO_PATH)
 
 #
