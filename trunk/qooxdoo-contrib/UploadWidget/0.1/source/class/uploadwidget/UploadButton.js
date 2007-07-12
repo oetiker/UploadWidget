@@ -19,7 +19,7 @@
 
 /* ************************************************************************
 
-#module(ui_io)
+#module(uploadwidget_ui_io)
 
 ************************************************************************ */
 
@@ -41,12 +41,10 @@ qx.Class.define("uploadwidget.UploadButton",
   {
     this.base(arguments, text, icon, iconWidth, iconHeight, flash);
 
-  	if(name != null) {
+  	if(name) {
       this.setName(name);
     }
  
-    this._value = '';
-    
   	this.addEventListener("appear", this._createInputFileTag);
   },
   
@@ -64,9 +62,9 @@ qx.Class.define("uploadwidget.UploadButton",
      */
     name :
     {
+      check : "String",
       init : "",
-      apply : "_applyName",
-      nullable : false
+      apply : "_applyName"
     },
 
     /**
@@ -74,10 +72,10 @@ qx.Class.define("uploadwidget.UploadButton",
      */
     value :
     {
+      check : "String",
       init : "",
       apply : "_applyValue",
-      event : "changeValue",
-      nullable : false
+      event : "changeValue"
     }
   }, 
   
@@ -121,7 +119,7 @@ qx.Class.define("uploadwidget.UploadButton",
           }
         }
         else {
-          throw new error("Unable to set value to non null or non empty!");
+          throw new Error("Unable to set value to non null or non empty!");
         }
       }
     },
@@ -180,7 +178,7 @@ qx.Class.define("uploadwidget.UploadButton",
     	input.style.hidefocus 				= "true";
     
     	var _this = this;
-    	input.onchange = function(ev) { return _this._onchange(ev); };
+    	input.onchange = function(ev) { return _this._onChange(ev); };
     
     	this.getElement().appendChild(input);
     },
@@ -193,7 +191,7 @@ qx.Class.define("uploadwidget.UploadButton",
      * @param e {Event} TODOC
      * @return {void}
      */
-    _onchange : function(e) {
+    _onChange : function(e) {
       this._valueInputOnChange = true;
       this.setValue(this._input.value);
     }

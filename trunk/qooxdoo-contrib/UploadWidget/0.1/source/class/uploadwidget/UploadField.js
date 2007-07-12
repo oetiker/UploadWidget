@@ -19,7 +19,7 @@
 
 /* ************************************************************************
 
-#module(ui_io)
+#module(uploadwidget_ui_io)
 
 ************************************************************************ */
 
@@ -31,7 +31,7 @@
  */
 qx.Class.define("uploadwidget.UploadField",
 {
-  extend : qx.ui.layout.CanvasLayout,
+  extend : qx.ui.layout.BoxLayout,
 
   /*
   *****************************************************************************
@@ -42,27 +42,23 @@ qx.Class.define("uploadwidget.UploadField",
   construct : function(name, text, icon, iconHeight, flash)
   {
     this.base(arguments);
-
-    this.setHeight("auto");
-    this.setOverflow("hidden");
     
-  	this._text = new qx.ui.form.TextField();
-  	this._text.set({readOnly:true,left:0,marginTop:3});
-  	this.add(this._text);
-
-  	this._button = new uploadwidget.UploadButton(name, text, icon, iconHeight, flash);
-  	this._button.setRight(0);
-  	this.add(this._button);
-
-  
-
   	if(name) {
       this.setName(name);
     }
 
-    this._button.addEventListener("changeValue", this._onChangeValue, this );
+    this.initHeight();
+    this.initOverflow();
 
-  	this._button.addEventListener("appear", this._recomputeTextFieldRightPos, this);
+
+  	this._text = new qx.ui.form.TextField();
+  	this._text.set({readOnly:true,left:0,marginTop:3,width:"1*"});
+  	this.add(this._text);
+
+  	this._button = new uploadwidget.UploadButton(this.getName(), text, icon, iconHeight, flash);
+  	this._button.set({right:0});
+    this._button.addEventListener("changeValue", this._onChangeValue, this);
+  	this.add(this._button);
   },
 
   /*
@@ -78,9 +74,9 @@ qx.Class.define("uploadwidget.UploadField",
      */
     name :
     {
-      init : "",
-      apply : "_applyName",
-      nullable : false
+      check : "String",
+      init  : "",
+      apply : "_applyName"
     },
 
     /**
@@ -88,10 +84,37 @@ qx.Class.define("uploadwidget.UploadField",
      */
     value :
     {
+      check : "String",
       init : "",
       apply : "_applyValue",
-      event : "changeValue",
-      nullable : false
+      event : "changeValue"
+    },
+    
+    /**
+     * refine the initial value of height to auto
+     */
+    height:
+    {
+      refine : true,
+      init   : "auto"
+    },
+    
+    /**
+     * refine the initial value of overflow to hidden
+     */
+    overflow :
+    {
+      refine : true,
+      init   : "hidden"
+    },
+    
+    /**
+     * refine the initial value of spacing to 4
+     */
+    spacing :
+    {
+      refine : true,
+      init   : 3
     }
   }, 
 
@@ -103,7 +126,15 @@ qx.Class.define("uploadwidget.UploadField",
 
   members :
   {
-    
+    /*
+    ------------------------------------------------------------------------------------
+      Instance variables
+    ------------------------------------------------------------------------------------
+    */
+
+    _value : "",
+
+
     /*
     ---------------------------------------------------------------------------
       MODIFIERS
@@ -135,26 +166,18 @@ qx.Class.define("uploadwidget.UploadField",
      * @param old {var} Previous value
      */
     _applyName : function(value, old) {
-      this._button.setName(value);
+      if(this._button) {
+        this._button.setName(value);
+      }
     },
 
+
+    
     /*
     ---------------------------------------------------------------------------
       EVENT HANDLER
     ---------------------------------------------------------------------------
     */
-    
-    /**
-     * Appear event handler for the button widget. After the button appeared
-     * the right pos of the text widget is calculated and set.
-     *
-     * @type member
-     * @param e {Event} appear event data
-     * @return {void}
-     */
-    _recomputeTextFieldRightPos : function(e) {
-  	  this._text.setRight(this._button.getInnerWidth() + 14);
-    },
     
     /**
      * If the user select a file by clicking the button, the value of
@@ -172,12 +195,12 @@ qx.Class.define("uploadwidget.UploadField",
     }
   },    
 
+
   /*
   *****************************************************************************
      DESTRUCTOR
   *****************************************************************************
   */
-
   destruct : function()
   {
     this._disposeObjects("_button", "_text");

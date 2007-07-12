@@ -19,7 +19,7 @@
 
 /* ************************************************************************
 
-#module(ui_io)
+#module(uploadwidget_ui_io)
 #require(qx.xml.Document)
 
 ************************************************************************ */
@@ -44,47 +44,38 @@ qx.Class.define("uploadwidget.UploadForm",
 
   /**
    * @param name {String} form name ({@link #name}).
-   * @param url {String} url name ({@link #url}).
+   * @param url {String} url for form submission ({@link #url}).
+   * @param encoding {String} encoding for from submission. This is an instantiation only parameter and defaults to multipart/form-data
    */
-  construct : function(name, url)
+  construct : function(name, url, encoding)
   {
     this.base(arguments);
 
+    // Apply initial values
+    if(name) {
+      this.setName(name);
+    }
+    
+    if(url) {
+      this.setUrl(url);
+    }
+
+    this.setHtmlProperty("encoding", encoding || "multipart/form-data");
+
+    // Initialize Properties
+    this.initHeight();
+    this.initSelectable();
+    this.initMethod();
+
+
+    // Initialize Variables
     this._parameters = {};
     this._hidden = {};
 
-    // Apply initial values
-    this.setName(name);
-    this.setUrl(url);
-
-    // Initialize Properties
-    this.setHeight('auto');
-    this.setSelectable(false);
-    this.setHtmlProperty('enctype','multipart/form-data');
-    this.setStyleProperty('line-height','0');
-
-    var vUniqueId = (new Date).valueOf();
-    var vFrameName = "frame_" + vUniqueId;
-  
-    if (qx.core.Variant.isSet("qx.client", "mshtml")) {
-      this._iframeNode = document.createElement('<iframe name="' + vFrameName + '"></iframe>');
-    } else {
-      this._iframeNode = document.createElement("iframe");
-    }
-  
-    this._iframeNode.src = "javascript:void(0)";
-    this._iframeNode.id = this._iframeNode.name = vFrameName;
-  
-    this._iframeNode.style.display = "none";
-  
-    this.setTarget(vFrameName);
-  
-    document.body.appendChild(this._iframeNode);
-  
-    var o = this;
-    this._iframeNode.onload = function(e) { return o._onload(e); }
-    this._iframeNode.onreadystatechange = function(e) { return o._onreadystatechange(e); }
+    // create a hidden iframe which is used as form submission target
+    this._createIFrameTarget();
   },
+
 
   /*
   *****************************************************************************
@@ -97,6 +88,7 @@ qx.Class.define("uploadwidget.UploadForm",
     "sending"    : "qx.event.type.Event",
     "completed"  : "qx.event.type.Event"
   },
+
 
   /*
   *****************************************************************************
@@ -111,8 +103,9 @@ qx.Class.define("uploadwidget.UploadForm",
      */
     name :
     {
-      init : "",
-      nullable : false
+      check    : "String",
+      init     : "",
+      apply    : "_applyName"
     },
 
     /**
@@ -120,8 +113,9 @@ qx.Class.define("uploadwidget.UploadForm",
      */
     url :
     {
-      init : "",
-      nullable : false
+      check    : "String",
+      init     : "",
+      apply    : "_applyUrl"
     },
 
     /**
@@ -129,8 +123,9 @@ qx.Class.define("uploadwidget.UploadForm",
      */
     target :
     {
-      init : "",
-      nullable : false
+      check    : "String",
+      init     : "",
+      apply    : "_applyTarget"
     },
 
     /**
@@ -139,7 +134,26 @@ qx.Class.define("uploadwidget.UploadForm",
     method :
     {
       check : [ qx.net.Http.METHOD_GET, qx.net.Http.METHOD_POST, qx.net.Http.METHOD_PUT, qx.net.Http.METHOD_HEAD, qx.net.Http.METHOD_DELETE ],
-      init : qx.net.Http.METHOD_POST
+      init  : qx.net.Http.METHOD_POST,
+      apply : "_applyMethod"
+    },
+
+    /**
+     * refine the initial value of height to auto
+     */
+    height:
+    {
+      refine : true,
+      init   : "auto"
+    },
+
+    /**
+     * refine the initial value of selectable to true
+     */
+    selectable :
+    {
+      refine : true,
+      init   : true
     }
   },
   
@@ -152,12 +166,66 @@ qx.Class.define("uploadwidget.UploadForm",
 
   members :
   {
+
+
+    /*
+    ---------------------------------------------------------------------------
+      APPLY ROUTINES
+    ---------------------------------------------------------------------------
+    */
+
+    _applyName : function(value, old) {
+      this.setHtmlProperty("name", value);
+    },
+    
+    _applyUrl : function(value, old) {
+      this.setHtmlProperty("action", value);
+    },
+
+    _applyTarget : function(value, old) {
+      this.setHtmlProperty("target", value);
+    },
+
+    _applyMethod : function(value, old) {
+      this.setHtmlProperty("method", value);
+    },
+    
+    
     /*
     ---------------------------------------------------------------------------
       UTILITIES
     ---------------------------------------------------------------------------
     */
 
+    /**
+     * Create a hidden iframe which is used as target for the form submission.
+     *
+     * @type member
+     * @return {void}
+     */
+    _createIFrameTarget : function() {
+      var frameName = "frame_" + (new Date).valueOf();
+    
+      if (qx.core.Variant.isSet("qx.client", "mshtml")) {
+        this._iframeNode = document.createElement('<iframe name="' + frameName + '"></iframe>');
+      } else {
+        this._iframeNode = document.createElement("iframe");
+      }
+    
+      this._iframeNode.src = "javascript:void(0)";
+      this._iframeNode.id = this._iframeNode.name = frameName;
+    
+      this._iframeNode.style.display = "none";
+    
+      this.setTarget(frameName);
+    
+      document.body.appendChild(this._iframeNode);
+    
+      this._iframeNode.onload = qx.lang.Function.bind(this._onLoad, this);
+      this._iframeNode.onreadystatechange = qx.lang.Function.bind(this._onReadyStateChange, this);
+    },
+    
+    
     /**
      * Create an empty form widget. IE is not able to change the enctype
      * after element creation, so the enctype is set by using a skeleton
@@ -169,13 +237,14 @@ qx.Class.define("uploadwidget.UploadForm",
     _createElementImpl : function() {
       var tagName;
       if (qx.core.Variant.isSet("qx.client", "mshtml")) {
-        tagName ='<form enctype="multipart/form-data"></form>';
+        tagName ='<form enctype="' + this.getHtmlProperty("encoding") + '"></form>';
       } else {
         tagName = 'form';
       }
-      // this.debug('tagName: ' + tagName);
+      
       this.setElement(this.getTopLevelWidget().getDocumentElement().createElement(tagName));
     },
+
 
     /**
      * Add parameters as hidden fields to the form.
@@ -188,7 +257,6 @@ qx.Class.define("uploadwidget.UploadForm",
       var parameters = this.getParameters();
 
       for (var id in parameters) {
-        // this.debug('_addFormParameters name: ' + this._hidden[id].name + ', value: ' + this._hidden[id].value);
         form.appendChild(this._hidden[id]);
       }
     },
@@ -209,30 +277,27 @@ qx.Class.define("uploadwidget.UploadForm",
       hvalue.name = name;
       hvalue.value = value;
     
-      // this.debug('_createHiddenFormField name: ' + name + ', value: ' + value);
       return hvalue;
     },
 
 
     /**
-     * Add a parameter to the request.
+     * Set a request parameter which is stored as an input type=hidden.
      * 
      * @param id String identifier of the parameter to add.
      * @param value String Value of parameter.
      * @return {void}
      */
     setParameter : function(id, value) {
-      // this.debug('setParameter id: ' + id + ', value: ' + value);
       this._parameters[id] = value;
       if(this._hidden[id] && this._hidden[id].name) {
-        // this.debug('set old value');
         this._hidden[id].value = value;
       }
       else {
-        // this.debug('created new hidden field');
         this._hidden[id] = this._createHiddenFormField(id, value);
       }
     },
+
 
     /**
      * Remove a parameter from the request.
@@ -248,6 +313,7 @@ qx.Class.define("uploadwidget.UploadForm",
       delete this._hidden[id];
     },
 
+
     /**
      * Get a parameter in the request.
      * 
@@ -257,6 +323,7 @@ qx.Class.define("uploadwidget.UploadForm",
     getParameter : function(id) {
       return this._parameters[id] || null;
     },
+
     
     /**
      * Returns the array containg all parameters for the request.
@@ -278,17 +345,9 @@ qx.Class.define("uploadwidget.UploadForm",
       var form = this.getElement();
       if(form) {
         this._addFormParameters();
-    
-        form.target = this.getTarget();
-        form.action = this.getUrl();
-        form.method = this.getMethod();
-    
-        // this.debug("target: " + form.target);
-        // this.debug("action: " + form.action);
-        // this.debug("method: " + form.method);
-        // this.debug("enctype: " + form.enctype);
-    
+
         form.submit();
+
         this._isSent = true;
         this.createDispatchEvent("sending");
       }
@@ -298,27 +357,56 @@ qx.Class.define("uploadwidget.UploadForm",
     },
 
 
+
     /*
     ---------------------------------------------------------------------------
       FRAME UTILITIES
     ---------------------------------------------------------------------------
     */
     
+    /**
+     * Get the DOM window object of the target iframe.
+     *
+     * @type member
+     * @return {DOMWindow} The DOM window object of the iframe.
+     */
     getIframeWindow : function() {
       return qx.html.Iframe.getWindow(this._iframeNode);
     },
+
     
+    /**
+     * Get the DOM document object of the target iframe.
+     *
+     * @type member
+     * @return {DOMDocument} The DOM document object of the iframe.
+     */
     getIframeDocument : function() {
       return qx.html.Iframe.getDocument(this._iframeNode);
     },
     
+
+    /**
+     * Get the HTML body element of the target iframe.
+     *
+     * @type member
+     * @return {Element} The DOM node of the <code>body</code> element of the iframe.
+     */
     getIframeBody : function() {
       return qx.html.Iframe.getBody(this._iframeNode);
     },
+
     
+    /**
+     * Get the target iframe Element.
+     *
+     * @type member
+     * @return {Element} The DOM element of the iframe.
+     */
     getIframeNode : function() {
       return this._iframeNode;
     },
+
 
 
     /*
@@ -327,6 +415,12 @@ qx.Class.define("uploadwidget.UploadForm",
     ---------------------------------------------------------------------------
     */
     
+    /**
+     * Get the text content of the target iframe. 
+     *
+     * @type member
+     * @return {String} The text response of the submit.
+     */
     getIframeTextContent : function() {
       var vBody = this.getIframeBody();
     
@@ -346,11 +440,32 @@ qx.Class.define("uploadwidget.UploadForm",
       }
     },
     
+
+    /**
+     * Get the HTML content of the target iframe. 
+     *
+     * @type member
+     * @return {String} The html response of the submit.
+     */
     getIframeHtmlContent : function() {
       var vBody = this.getIframeBody();
       return vBody ? vBody.innerHTML : null;
     },
     
+
+    /**
+     * Get the XML content of the target iframe. 
+     * 
+     * This is a hack for now because I didn't find a way
+     * to send XML via the iframe response.
+     * 
+     * In the resulting text all occurences of the &lt;
+     * and &gt; entities are replaces by < and > and
+     * the Text is then parsed into a XML-Document instance.
+     *
+     * @type member
+     * @return {Document} The XML response of the submit.
+     */
     getIframeXmlContent : function() {
       var responsetext = this.getIframeTextContent();
     
@@ -370,20 +485,37 @@ qx.Class.define("uploadwidget.UploadForm",
       return xmlContent;
     },
 
+
+
     /*
     ---------------------------------------------------------------------------
       EVENT HANDLER
     ---------------------------------------------------------------------------
     */
     
-    _onreadystatechange : function() {
+    /**
+     * Catch the onreadystatechange event of the target iframe.
+     *
+     * @type member
+     * @param e {Event}
+     * @return {void}
+     */
+    _onReadyStateChange : function(e) {
       if (this.getIframeNode().readyState == "complete" && this._isSent) {
         this.createDispatchEvent("completed");
         delete this._isSent;
       }
     },
+
     
-    _onload : function() {
+    /**
+     * Catch the onload event of the target iframe
+     *
+     * @type member
+     * @param e {Event}
+     * @return {void}
+     */
+    _onLoad : function(e) {
       if(this._isSent) {
         this.createDispatchEvent("completed");
         delete this._isSent;
@@ -406,11 +538,13 @@ qx.Class.define("uploadwidget.UploadForm",
   
     this._parameters = null;
   
-    for (var vId in this._hidden) {
-      if(this._hidden[vId] && this._hidden[vId].parentNode) {
-        this._hidden[vId].parentNode.removeChild(this._hidden[vId]);
+    for (var id in this._hidden) {
+      if(this._hidden[id] && this._hidden[id].parentNode) {
+        this._hidden[id].parentNode.removeChild(this._hidden[id]);
       }
     }
+    
+    this._hidden = null;
   }
 });  
 
