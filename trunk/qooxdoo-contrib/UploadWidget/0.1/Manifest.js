@@ -2,16 +2,20 @@
   "name" : "UploadWidget",
 
   "summary" : "Widget for HTTP file uploads.",
+  "description" : "...",
   "keywords" : ["widget"],
+  "homepage" : "http://qooxdoo.org/documentation/contrib",
   
+  "license" : "LGPL/EPL",    
   "authors" : [
     {
-      "name" : "Dietrich Streifert (level420)" 
+      "name" : "Dietrich Streifert",
+      "user" : "level420"
     }
   ],
+
+  "namespace" : "uploadwidget",
   
-  "license" : "EPL/LGPL",    
   "version" : "0.1",
-  "qooxdoo-versions": ["0.7", "trunk"],
-  "namespace" : "uploadwidget"
+  "qooxdoo-versions": ["0.7", "trunk"]
 }
