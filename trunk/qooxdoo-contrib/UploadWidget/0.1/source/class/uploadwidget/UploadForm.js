@@ -64,6 +64,7 @@ qx.Class.define("uploadwidget.UploadForm",
 
     // Initialize Properties
     this.initHeight();
+    this.initWidth();
     this.initSelectable();
     this.initMethod();
 
@@ -133,7 +134,7 @@ qx.Class.define("uploadwidget.UploadForm",
      */
     method :
     {
-      check : [ qx.net.Http.METHOD_GET, qx.net.Http.METHOD_POST, qx.net.Http.METHOD_PUT, qx.net.Http.METHOD_HEAD, qx.net.Http.METHOD_DELETE ],
+      check : [ qx.net.Http.METHOD_GET, qx.net.Http.METHOD_POST ],
       init  : qx.net.Http.METHOD_POST,
       apply : "_applyMethod"
     },
@@ -142,6 +143,15 @@ qx.Class.define("uploadwidget.UploadForm",
      * refine the initial value of height to auto
      */
     height:
+    {
+      refine : true,
+      init   : "auto"
+    },
+
+    /**
+     * refine the initial value of width to auto
+     */
+    width:
     {
       refine : true,
       init   : "auto"
