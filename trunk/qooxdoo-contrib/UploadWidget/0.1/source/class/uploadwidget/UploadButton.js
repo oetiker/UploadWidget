@@ -139,6 +139,22 @@ qx.Class.define("uploadwidget.UploadButton",
     },
 
 
+    /**
+     * Apply the enabled property.
+     *
+     * @type member
+     * @param value {var} Current value
+     * @param old {var} Previous value
+     */
+    _applyEnabled : function(value, old)
+    {
+      if (this._input) {
+        this._input.disabled = value===false;
+      }
+
+      return this.base(arguments, value, old);
+    },
+
     /*
     ---------------------------------------------------------------------------
       EVENT-HANDLER
@@ -176,6 +192,7 @@ qx.Class.define("uploadwidget.UploadButton",
     	input.style.opacity 	= "0";
     	input.style.MozOutlinestyle 	= "none";
     	input.style.hidefocus 				= "true";
+      input.disabled = this.getEnabled()===false;
     
     	var _this = this;
     	input.onchange = function(ev) { return _this._onChange(ev); };

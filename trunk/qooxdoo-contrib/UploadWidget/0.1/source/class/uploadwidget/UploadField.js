@@ -189,7 +189,7 @@ qx.Class.define("uploadwidget.UploadField",
      * @return {void}
      */
     _onChangeValue : function(e) {
-      var value = e.getData();
+      var value = e.getValue();
       this._text.setValue(value);
       this.setValue(value);
     }
