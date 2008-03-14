@@ -41,11 +41,10 @@ qx.Class.define("uploadwidget.UploadButton",
   {
     this.base(arguments, text, icon, iconWidth, iconHeight, flash);
 
-  	if(name) {
+    if(name) {
       this.setName(name);
     }
- 
-  	this.addEventListener("appear", this._createInputFileTag);
+
   },
   
 
@@ -92,7 +91,23 @@ qx.Class.define("uploadwidget.UploadButton",
       MODIFIERS
     ---------------------------------------------------------------------------
     */
-    
+
+    /**
+     * after the button element is present create the input file tag
+     * 
+     * @param value {Object} new dom element
+     * @param old {Object} old one
+     * @type member
+     * @return {void}
+     */
+    _applyElement : function (value, old)
+    {
+      this.base(arguments, value, old);
+
+      this._createInputFileTag(value);
+    },
+
+
     /**
      * Modifies the value property of the hidden input type=file element.
      * Only an empty string is accepted for clearing out the value of the
@@ -170,37 +185,39 @@ qx.Class.define("uploadwidget.UploadButton",
      * @param e {Event|null} appear event
      * @return {void}
      */
-    _createInputFileTag : function(e) {
-      if(this._input) {
+    _createInputFileTag : function(elem)
+    {
+      if(this._input)
+      {
         this._input.name += "_tmp_";
         this._input.parentNode.removeChild(this._input);
         this._input = null;
       }
-    
-    	var input = this._input = document.createElement("input");
-    	input.type = "file";
-    	input.name	= this.getName();
-    	input.style.position = "absolute";
-    	input.style.left 		= "-860px";
-    	input.style.height		= "27px";
-    	input.style.fontSize = "60px";
-    	input.style.clip	= "rect(auto, " + 860 + this.getWidthValue() + "px, auto, 860px)";
-    	input.style.zIndex 	= "100";
-    	input.style.cursor 	= "hand";
-    	input.style.cursor 	= "pointer";
-    	input.style.filter 	= "alpha(opacity=0)";
-    	input.style.opacity 	= "0";
-    	input.style.MozOutlinestyle 	= "none";
-    	input.style.hidefocus 				= "true";
-      input.disabled = this.getEnabled()===false;
-    
-    	var _this = this;
-    	input.onchange = function(ev) { return _this._onChange(ev); };
-    
-    	this.getElement().appendChild(input);
+
+      var input  = this._input = document.createElement("input");
+      input.type = "file";
+      input.name = this.getName();
+      input.style.position  = "absolute";
+      input.style.left      = "-860px";
+      input.style.height    = "27px";
+      input.style.fontSize  = "60px";
+      input.style.clip      = "rect(auto, " + 860 + this.getWidthValue() + "px, auto, 860px)";
+      input.style.zIndex    = "100";
+      input.style.cursor    = "hand";
+      input.style.cursor    = "pointer";
+      input.style.filter    = "alpha(opacity=0)";
+      input.style.opacity   = "0";
+      input.style.MozOutlinestyle   = "none";
+      input.style.hidefocus         = "true";
+      input.disabled        = this.getEnabled() === false;
+
+      var _this = this;
+      input.onchange = function(ev) { return _this._onChange(ev); };
+
+      elem.appendChild(input);
     },
 
-    
+
     /**
      * Handle the onchange event of the hidden input type=file element
      *
@@ -212,8 +229,8 @@ qx.Class.define("uploadwidget.UploadButton",
       this._valueInputOnChange = true;
       this.setValue(this._input.value);
     }
+
   },
-    
 
 
   /*
@@ -224,16 +241,11 @@ qx.Class.define("uploadwidget.UploadButton",
 
   destruct : function()
   {
-    this.removeEventListener("mouseover", this._onmouseover);
-    this.removeEventListener("mouseout", this._onmouseout);
-    this.removeEventListener("mousedown", this._onmousedown);
-    this.removeEventListener("mouseup", this._onmouseup);
-  	this.removeEventListener("appear", this._createInputFileTag);
-  
     if(this._input) {
       this._input.parentNode.removeChild(this._input);
       this._input.onchange = null;
       this._input = null;
     } 
   }
-});  
+
+});
