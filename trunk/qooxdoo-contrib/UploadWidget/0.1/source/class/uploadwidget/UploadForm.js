@@ -209,28 +209,29 @@ qx.Class.define("uploadwidget.UploadForm",
 
     /**
      * Create a hidden iframe which is used as target for the form submission.
+     * Don't need a src attribute, if it was set to javascript:void we get an insecure
+     * objects error in IE.
      *
      * @type member
      * @return {void}
      */
-    _createIFrameTarget : function() {
+    _createIFrameTarget : function()
+    {
       var frameName = "frame_" + (new Date).valueOf();
-    
-      if (qx.core.Variant.isSet("qx.client", "mshtml")) {
+
+      if (qx.core.Variant.isSet("qx.client", "mshtml"))
+      {
         this._iframeNode = document.createElement('<iframe name="' + frameName + '"></iframe>');
       } else {
         this._iframeNode = document.createElement("iframe");
       }
-    
-      this._iframeNode.src = "javascript:void(0)";
+
       this._iframeNode.id = this._iframeNode.name = frameName;
-    
       this._iframeNode.style.display = "none";
-    
       this.setTarget(frameName);
-    
+
       document.body.appendChild(this._iframeNode);
-    
+
       this._iframeNode.onload = qx.lang.Function.bind(this._onLoad, this);
       this._iframeNode.onreadystatechange = qx.lang.Function.bind(this._onReadyStateChange, this);
     },
