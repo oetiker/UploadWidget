@@ -542,15 +542,27 @@ qx.Class.define("uploadwidget.UploadForm",
 
   destruct : function()
   {
-    document.body.removeChild(this._iframeNode);
-    this._iframeNode.onreadystatechange = null;
-    this._iframeNode.onload = null;
-    this._iframeNode = null;
+    if (this._iframeNode)
+    {
+      try
+      {
+        document.body.removeChild(this._iframeNode);
+        this._iframeNode.onreadystatechange = null;
+        this._iframeNode.onload = null;
+        this._iframeNode = null;
+      }
+      catch (exc)
+      {
+        this.warn("can't remove iframe node from dom.");
+      }
+    }
   
     this._parameters = null;
   
-    for (var id in this._hidden) {
-      if(this._hidden[id] && this._hidden[id].parentNode) {
+    for (var id in this._hidden)
+    {
+      if(this._hidden[id] && this._hidden[id].parentNode)
+      {
         this._hidden[id].parentNode.removeChild(this._hidden[id]);
       }
     }
