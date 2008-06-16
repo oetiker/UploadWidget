@@ -198,10 +198,10 @@ qx.Class.define("uploadwidget.UploadButton",
       input.type = "file";
       input.name = this.getName();
       input.style.position  = "absolute";
-      input.style.left      = "-860px";
+      input.style.left      = "-790px";
       input.style.height    = "27px";
       input.style.fontSize  = "60px";
-      input.style.clip      = "rect(auto, " + 860 + this.getWidthValue() + "px, auto, 860px)";
+      input.style.clip      = "rect(auto, " + 790 + this.getWidthValue() + "px, auto, 790px)";
       input.style.zIndex    = "100";
       input.style.cursor    = "hand";
       input.style.cursor    = "pointer";
