@@ -2,9 +2,9 @@
   "name" : "UploadWidget",
 
   "summary" : "Widget for HTTP file uploads.",
-  "description" : "...",
+  "description" : "",
   "keywords" : ["widget"],
-  "homepage" : "http://qooxdoo.org/documentation/contrib",
+  "homepage" : "http://contrib.qooxdoo.org",
   
   "license" : "LGPL/EPL",    
   "authors" : [
@@ -16,6 +16,6 @@
 
   "namespace" : "uploadwidget",
   
-  "version" : "0.1",
-  "qooxdoo-versions": ["0.7", "trunk"]
+  "version" : "trunk",
+  "qooxdoo-versions": ["0.7"]
 }
