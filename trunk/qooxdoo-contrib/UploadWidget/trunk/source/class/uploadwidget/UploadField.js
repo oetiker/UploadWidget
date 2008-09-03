@@ -49,10 +49,9 @@ qx.Class.define("uploadwidget.UploadField",
     if (fieldName) this.setFieldName(fieldName);
 
     this._textfield = new qx.ui.form.TextField();
-    //  this._textfield.set({readOnly:true,left:0,marginTop:3,width:"1*"});
+    this._textfield.setReadOnly(true);
 
     this._button = new uploadwidget.UploadButton(this.getFieldName(), label, icon);
-    //this._button.set({right:0});
     this._button.addListener("changeFieldValue", this._onChangeFieldValue, this);
 
     this.add(this._textfield, {flex: 1});
