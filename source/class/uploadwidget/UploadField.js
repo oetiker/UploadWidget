@@ -14,6 +14,9 @@
 
    Authors:
      * Dietrich Streifert (level420)
+   
+   Contributors:
+     * Petr Kobalicek (e666e)     
 
 ************************************************************************ */
 
@@ -31,115 +34,83 @@
  */
 qx.Class.define("uploadwidget.UploadField",
 {
-  extend : qx.ui.layout.BoxLayout,
+  extend : qx.ui.container.Composite,
 
-  /*
-  *****************************************************************************
-     CONSTRUCTOR
-  *****************************************************************************
-  */
+  // --------------------------------------------------------------------------
+  // [Constructor]
+  // --------------------------------------------------------------------------
 
-  construct : function(name, text, icon, iconHeight, flash)
+  construct : function(fieldName, label, icon)
   {
     this.base(arguments);
-    
-  	if(name) {
-      this.setName(name);
-    }
 
-    this.initHeight();
-    this.initOverflow();
+    this.setLayout(new qx.ui.layout.HBox().set({spacing: 2}))
 
+    if (fieldName) this.setFieldName(fieldName);
 
-  	this._text = new qx.ui.form.TextField();
-  	this._text.set({readOnly:true,left:0,marginTop:3,width:"1*"});
-  	this.add(this._text);
+    this._textfield = new qx.ui.form.TextField();
+    //  this._textfield.set({readOnly:true,left:0,marginTop:3,width:"1*"});
 
-  	this._button = new uploadwidget.UploadButton(this.getName(), text, icon, iconHeight, flash);
-  	this._button.set({right:0});
-    this._button.addEventListener("changeValue", this._onChangeValue, this);
-  	this.add(this._button);
+    this._button = new uploadwidget.UploadButton(this.getFieldName(), label, icon);
+    //this._button.set({right:0});
+    this._button.addListener("changeFieldValue", this._onChangeFieldValue, this);
+
+    this.add(this._textfield, {flex: 1});
+    this.add(this._button);
   },
 
-  /*
-  *****************************************************************************
-     PROPERTIES
-  *****************************************************************************
-  */
+  // --------------------------------------------------------------------------
+  // [Destructor]
+  // --------------------------------------------------------------------------
+
+  destruct : function()
+  {
+    this._disposeObjects("_button", "_textfield");
+  },
+
+  // --------------------------------------------------------------------------
+  // [Properties]
+  // --------------------------------------------------------------------------
 
   properties :
   {
     /**
      * The name which is assigned to the form
      */
-    name :
+    fieldName :
     {
       check : "String",
       init  : "",
-      apply : "_applyName"
+      apply : "_applyFieldName"
     },
 
     /**
      * The value which is assigned to the form
      */
-    value :
+    fieldValue :
     {
       check : "String",
       init : "",
-      apply : "_applyValue",
-      event : "changeValue"
-    },
-    
-    /**
-     * refine the initial value of height to auto
-     */
-    height:
-    {
-      refine : true,
-      init   : "auto"
-    },
-    
-    /**
-     * refine the initial value of overflow to hidden
-     */
-    overflow :
-    {
-      refine : true,
-      init   : "hidden"
-    },
-    
-    /**
-     * refine the initial value of spacing to 4
-     */
-    spacing :
-    {
-      refine : true,
-      init   : 3
+      apply : "_applyFieldValue",
+      event : "changeFieldValue"
     }
   }, 
 
-  /*
-  *****************************************************************************
-     MEMBERS
-  *****************************************************************************
-  */
+  // --------------------------------------------------------------------------
+  // [Members]
+  // --------------------------------------------------------------------------
 
   members :
   {
-    /*
-    ------------------------------------------------------------------------------------
-      Instance variables
-    ------------------------------------------------------------------------------------
-    */
+    // ------------------------------------------------------------------------
+    // [Instance Variables]
+    // ------------------------------------------------------------------------
 
     _value : "",
 
-
-    /*
-    ---------------------------------------------------------------------------
-      MODIFIERS
-    ---------------------------------------------------------------------------
-    */
+    // ------------------------------------------------------------------------
+    // [Modifiers]
+    // ------------------------------------------------------------------------
     
     /**
      * Value modifier. Sets the value of both the text field and
@@ -150,9 +121,10 @@ qx.Class.define("uploadwidget.UploadField",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyValue : function(value, old) {
-      this._button.setValue(value);
-      this._text.setValue(value);
+    _applyFieldValue : function(value, old)
+    {
+      this._button.setFieldValue(value);
+      this._textfield.setValue(value);
     },
 
 
@@ -165,19 +137,34 @@ qx.Class.define("uploadwidget.UploadField",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyName : function(value, old) {
-      if(this._button) {
-        this._button.setName(value);
-      }
+    _applyFieldName : function(value, old)
+    {
+      if (this._button) this._button.setFieldName(value);
     },
 
+    // ------------------------------------------------------------------------
+    // [Setters / Getters]
+    // ------------------------------------------------------------------------
+   
+    /**
+     * Returns component text field widget.
+     */
+    getTextField: function()
+    {
+      return this._textfield;
+    },
 
+    /**
+     * Returns component button widget.
+     */
+    getButton: function()
+    {
+      return this._button;
+    },
     
-    /*
-    ---------------------------------------------------------------------------
-      EVENT HANDLER
-    ---------------------------------------------------------------------------
-    */
+    // ------------------------------------------------------------------------
+    // [Event Handlers]
+    // ------------------------------------------------------------------------
     
     /**
      * If the user select a file by clicking the button, the value of
@@ -188,21 +175,11 @@ qx.Class.define("uploadwidget.UploadField",
      * @param e {Event} change value event data
      * @return {void}
      */
-    _onChangeValue : function(e) {
-      var value = e.getValue();
-      this._text.setValue(value);
-      this.setValue(value);
+    _onChangeFieldValue : function(e)
+    {
+      var value = e.getData();
+      this._textfield.setValue(value);
+      this.setFieldValue(value);
     }
-  },    
-
-
-  /*
-  *****************************************************************************
-     DESTRUCTOR
-  *****************************************************************************
-  */
-  destruct : function()
-  {
-    this._disposeObjects("_button", "_text");
   }
-});  
+});

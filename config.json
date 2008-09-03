@@ -1,0 +1,36 @@
+// UploadWidget - config json
+{
+  "name" : "UploadWidget config.json",
+  
+  "include" :
+  [
+    {
+      "path" : "../../qooxdoo/qooxdoo-0.8-sdk/tool/data/config/application.json"
+    }
+  ],
+  
+  "let" :
+  {
+    "APPLICATION"  : "uploadwidget",
+    "QOOXDOO_PATH" : "../../qooxdoo/qooxdoo-0.8-sdk/framework",
+    "QOOXDOO_URI"  : "../${QOOXDOO_PATH}",
+    "TEST_INCLUDE" : "${APPLICATION}.*",
+    "CACHE"        : "../../qooxdoo/qooxdoo-0.8-sdk/cache",
+    "ROOT"         : "."
+  },
+  
+  
+  "jobs" :
+  {
+    "api-light" :
+    {
+      "extend" : [ "api" ],
+
+      "let" :
+      {
+        "API_INCLUDE"  : ["${APPLICATION}.*"],
+        "API_EXCLUDE"  : ["qx.*"]
+      }
+    }
+  }
+}
