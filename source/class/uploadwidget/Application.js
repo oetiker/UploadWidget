@@ -67,11 +67,11 @@ qx.Class.define("uploadwidget.Application",
       
       var lbl1Text = "<h1>UploadForm and UploadFile Implementation</h1>" +
       		           "<p>The class UploadForm creates a hidden iframe which is used as a target for the form submit.</p>" +
-      		           "<p>An event of type \"sending\" is fired after submit. " +
-      		           "On completion (iframe completed loading) a \"completed\" event is fired.</p>" +
+      		           "<p>An event of type <b>\"sending\"</b> is fired after submit. " +
+      		           "On completion (iframe completed loading) a <b>\"completed\"</b> event is fired.</p>" +
       		           "<p>Upload form implements the methods getIframeTextContent, getIframeHtmlContent " +
       		           "and getIframeXmlContent to get the content of the iframe</p>" +
-      		           "<p>UploadFile fires a \"changeValue\" event after the selection thruogh the OS fileselector is " +
+      		           "<p>UploadFile fires a <b>\"changeFieldValue\"</b> event after the selection through the OS fileselector is " +
       		           "completed</p>" +
       		           "<p>Multiple UploadFile instances are possible. The text field is readonly</p>";
       var label1 = new qx.ui.basic.Label(lbl1Text);
@@ -93,7 +93,7 @@ qx.Class.define("uploadwidget.Application",
 
       form.addListener('completed',function(e) {
         this.debug('completed');
-        file.setValue('');
+        file.setFieldValue('');
         var response = this.getIframeHtmlContent();
         this.debug(response);
       });
@@ -149,9 +149,9 @@ qx.Class.define("uploadwidget.Application",
       
       form2.addListener('completed',function(e) {
         this.debug('completed');
-        file1.setValue('');
-        file2.setValue('');
-        file3.setValue('');
+        file1.setFieldValue('');
+        file2.setFieldValue('');
+        file3.setFieldValue('');
         var response = this.getIframeHtmlContent();
         this.debug(response);
         bt.setEnabled(true);
@@ -214,9 +214,12 @@ qx.Class.define("uploadwidget.Application",
       
       form3.addListener('completed',function(e) {
         this.debug('completed');
-        file1.setValue('');
-        file2.setValue('');
-        file3.setValue('');
+        file1.setFieldValue('');
+        file2.setFieldValue('');
+        file3.setFieldValue('');
+        file4.setFieldValue('');
+        file5.setFieldValue('');
+        file6.setFieldValue('');
         var response = this.getIframeHtmlContent();
         this.debug(response);
         bt.setEnabled(true);
