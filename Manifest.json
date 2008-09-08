@@ -6,7 +6,7 @@
     "summary" : "Widget for HTTP file uploads.",
     "description" : "",
     
-    "keywords" : ["qooxdoo", "widget", "cross-browser"],
+    "keywords" : ["qooxdoo", "widget", "cross-browser", "upload"],
     "homepage" : "http://qooxdoo.org/documentation/contrib/contributions#uploadwidget",
 
     "license" : "LGPL/EPL",
