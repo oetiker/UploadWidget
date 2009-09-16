@@ -56,7 +56,9 @@ qx.Class.define("uploadwidget.UploadButton",
     var input = this._input;
     if (input)
     {
-      input.parentNode.removeChild(input);
+      if (input.parentNode){ //Can occur during dispose of layout parent
+        input.parentNode.removeChild(input);
+      }
       input.onchange = null;
       this._input = null;
     } 
