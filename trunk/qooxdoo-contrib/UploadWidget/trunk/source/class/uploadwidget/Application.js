@@ -13,15 +13,16 @@
      See the LICENSE file in the project's top-level directory for details.
 
    Authors:
-     * Alexander Back (aback)
+     * Alexander Steitz (aback)
 
 ************************************************************************ */
 
 /* ************************************************************************
 
 #asset(uploadwidget/*)
-#asset(qx/icon/Oxygen/16/actions/document-save.png)
-#asset(qx/icon/Oxygen/16/actions/dialog-ok.png)
+#asset(qx/icon/Tango/16/actions/document-save.png)
+#asset(qx/icon/Tango/16/actions/dialog-ok.png)
+#asset(qx/icon/Tango/16/actions/document-revert.png)
 
 ************************************************************************ */
 /**
@@ -118,10 +119,8 @@ qx.Class.define("uploadwidget.Application",
       
       var form2 = new uploadwidget.UploadForm('uploadFrm','/cgi-bin/uploadtest.pl');
       form2.setParameter('rm','upload_multiple');
-      form2.set({
-        decorator:"outset",
-        padding:8
-      });
+      form2.setPadding(8);
+
       var vb = new qx.ui.layout.VBox(10)
       form2.setLayout(vb);
       container2.add(form2);
@@ -175,10 +174,8 @@ qx.Class.define("uploadwidget.Application",
       
       var form3 = new uploadwidget.UploadForm('uploadFrm','/cgi-bin/uploadtest.pl');
       form3.setParameter('rm','upload_multiple');
-      form3.set({
-        decorator : "outset",
-        padding   : 8
-      });
+      form3.setPadding(8);
+
       form3.setLayout(new qx.ui.layout.VBox(10));
       container3.add(form3);
       
@@ -209,7 +206,7 @@ qx.Class.define("uploadwidget.Application",
       });
 
       var bt = new qx.ui.form.Button("Upload", "icon/16/actions/dialog-ok.png");
-      bt.set({ marginTop : 10,allowGrowX : false });
+      bt.set({ marginTop : 10, width : 100, allowGrowX : false });
       form3.add(bt);
       
       form3.addListener('completed',function(e) {
@@ -229,6 +226,13 @@ qx.Class.define("uploadwidget.Application",
         form3.send();
         this.setEnabled(false);
       });
+      
+      var resetButton = new qx.ui.form.Button("Reset", "icon/16/actions/document-revert.png");
+      resetButton.set({ width: 100, allowGrowX: false });
+      resetButton.addListener("execute", function(e) {
+        file1.setFieldValue("");
+      }, this);
+      form3.add(resetButton);
       
       mainContainer.add(container3);
       
