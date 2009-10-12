@@ -204,7 +204,11 @@ qx.Class.define("uploadwidget.UploadButton",
       input.style.hidefocus = "true";
       input.disabled        = this.getEnabled() === false;
       
-      this._setInputSize(16, 16);
+      var bounds = this.getBounds();
+      var width = bounds && bounds.width ? bounds.width : 16;
+      var height = bounds && bounds.height ? bounds.height : 16;
+      
+      this._setInputSize(width, height);
 
       var _this = this;
       input.onchange = function(ev) { return _this._onChange(ev); };
