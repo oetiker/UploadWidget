@@ -98,6 +98,31 @@ qx.Class.define("uploadwidget.UploadButton",
 
   members :
   {
+    // overridden
+    capture : qx.core.Variant.select("qx.client",
+    {
+      "mshtml" : function()
+      {
+        this.getApplicationRoot().addListenerOnce("mouseup", this._onMouseUp, this);
+      },
+      
+      "default" : function() {
+        this.base(arguments);
+      }
+    }),
+
+
+    // overridden
+    releaseCapture : qx.core.Variant.select("qx.client",
+    {
+      "mshtml" : qx.lang.Function.empty,
+      
+      "default" : function() {
+        this.base(arguments);
+      }
+    }),
+
+
     // ------------------------------------------------------------------------
     // [Modifiers]
     // ------------------------------------------------------------------------
