@@ -45,6 +45,11 @@ qx.Class.define("uploadwidget.UploadButton",
     if (fieldName) this.setFieldName(fieldName);
     this._createInputFileTag(this.getContainerElement());
     this.addListener("resize", this._onuploadresize, this);
+
+    // Fix for bug #3027
+    if (qx.core.Variant.isSet("qx.client", "opera")) {
+      this.setSelectable(true);
+    }
   },
   
   // --------------------------------------------------------------------------
@@ -254,6 +259,7 @@ qx.Class.define("uploadwidget.UploadButton",
       input.style.clip = "rect(auto, " + (791 + width) + "px, auto, 789px)";
       //input.style.clip = "rect(0px, " + (791 + width) + "px, " + height + "px, 789px)";
       input.style.height = "" + (height * 2) + "px";
+      input.style.width = (791 + width) + "px";
     },
 
     _onuploadresize: function(e)
