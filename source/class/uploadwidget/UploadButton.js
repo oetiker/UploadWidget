@@ -108,7 +108,7 @@ qx.Class.define("uploadwidget.UploadButton",
     {
       "mshtml" : function()
       {
-        this.getApplicationRoot().addListenerOnce("mouseup", this._onMouseUp, this);
+        this.__mouseUpListenerId = this.getApplicationRoot().addListenerOnce("mouseup", this._onMouseUp, this);
       },
       
       "default" : function() {
@@ -280,5 +280,11 @@ qx.Class.define("uploadwidget.UploadButton",
       this._valueInputOnChange = true;
       this.setFieldValue(this._input.value);
     }
+  },
+
+
+  destruct : function()
+  {
+     this.getApplicationRoot().removeListenerById(this.__mouseUpListenerId);
   }
 });
