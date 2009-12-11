@@ -285,6 +285,8 @@ qx.Class.define("uploadwidget.UploadButton",
 
   destruct : function()
   {
-     this.getApplicationRoot().removeListenerById(this.__mouseUpListenerId);
+    if (this.__mouseUpListenerId) {
+      this.getApplicationRoot().removeListenerById(this.__mouseUpListenerId);
+    }
   }
 });
