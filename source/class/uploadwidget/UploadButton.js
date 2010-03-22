@@ -42,8 +42,12 @@ qx.Class.define("uploadwidget.UploadButton",
   {
     this.base(arguments, label, icon, command);
 
-    if (fieldName) this.setFieldName(fieldName);
-    this._createInputFileTag(this.getContainerElement());
+    if (fieldName) {
+      this.setFieldName(fieldName);
+    }
+
+    this._qxElement = this._createInputFileTag(this.getContainerElement());
+
     this.addListener("resize", this._onuploadresize, this);
 
     // Fix for bug #3027
@@ -51,23 +55,16 @@ qx.Class.define("uploadwidget.UploadButton",
       this.setSelectable(true);
     }
   },
-  
+
+
   // --------------------------------------------------------------------------
-  // [Destructor]
+  // [Statics]
   // --------------------------------------------------------------------------
 
-  destruct : function()
-  {
-    var input = this._input;
-    if (input)
-    {
-      if (input.parentNode){ //Can occur during dispose of layout parent
-        input.parentNode.removeChild(input);
-      }
-      input.onchange = null;
-      this._input = null;
-    } 
+  statics : {
+    POSITION_LEFT : 790
   },
+
 
   // --------------------------------------------------------------------------
   // [Properties]
@@ -106,11 +103,10 @@ qx.Class.define("uploadwidget.UploadButton",
     // overridden
     capture : qx.core.Variant.select("qx.client",
     {
-      "mshtml" : function()
-      {
+      "mshtml" : function() {
         this.__mouseUpListenerId = this.getApplicationRoot().addListenerOnce("mouseup", this._onMouseUp, this);
       },
-      
+
       "default" : function() {
         this.base(arguments);
       }
@@ -121,7 +117,7 @@ qx.Class.define("uploadwidget.UploadButton",
     releaseCapture : qx.core.Variant.select("qx.client",
     {
       "mshtml" : qx.lang.Function.empty,
-      
+
       "default" : function() {
         this.base(arguments);
       }
@@ -141,8 +137,11 @@ qx.Class.define("uploadwidget.UploadButton",
      */
     _applyFieldName : function(value, old)
     {
-      if (this._input) this._input.name = value;
+      if (this._containsInputElement()) {
+        qx.bom.element.Attribute.set(this._qxElement.getDomElement(), "name", value);
+      }
     },
+
 
     /**
      * Modifies the value property of the hidden input type=file element.
@@ -166,13 +165,10 @@ qx.Class.define("uploadwidget.UploadButton",
       {
         if (!value || value == "")
         {
-          if (qx.core.Variant.isSet("qx.client", "mshtml"))
-          {
-            this._createInputFileTag(this.getContainerElement());
-          }
-          else
-          {
-            this._input.value = "";
+          if (qx.core.Variant.isSet("qx.client", "mshtml")) {
+            this._qxElement = this._createInputFileTag(this.getContainerElement());
+          } else {
+            this._resetValue();
           }
         }
         else
@@ -182,91 +178,181 @@ qx.Class.define("uploadwidget.UploadButton",
       }
     },
 
+
+    /**
+     * @return {void}
+     */
+    _resetValue : function ()
+    {
+      if (this._containsInputElement()) {
+        qx.bom.element.Attribute.set(this._qxElement.getDomElement(), "value", "");
+      }
+    },
+
+
     /**
      * Apply the enabled property.
      *
      * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
+     * @param value {Boolean} Current value
+     * @param old {Boolean} Previous value
      */
     _applyEnabled : function(value, old)
     {
-      if (this._input) this._input.disabled = (value === false);
+      if (this._containsInputElement()) {
+        qx.bom.element.Attribute.set(this._qxElement.getDomElement(), "disabled", (value === false));
+      }
 
       return this.base(arguments, value, old);
     },
 
+
+    /**
+     * @return {Boolean}
+     */
+    _containsInputElement : function () {
+      return (this._qxElement instanceof qx.html.Element && !this._qxElement.isDisposed());
+    },
+
+
+    /**
+     * @return {qx.html.Element}
+     */
+    _getInputElement : function () {
+      return this._qxElement;
+    },
+
+
+    /**
+     * Use wrapper. When materialized, qooxdoo adds 'input' element
+     * to container.
+     * 
+     * @param inputElem {qx.bom.Element}
+     * @return {qx.html.Element}
+     */
+    _createInputWrapper : function (inputElem)
+    {
+      var elem = new qx.html.Element();
+      elem.useElement(inputElem);
+
+      return elem;
+    },
+
+
+    /**
+     * @return {void}
+     */
+    _disposeInputElement : function ()
+    {
+      if(this._containsInputElement())
+      {
+        this._qxElement.destroy();
+        this._qxElement = null;
+      }
+    },
+
+
     // ------------------------------------------------------------------------
     // [Event Handlers]
     // ------------------------------------------------------------------------
- 
+
+
     /**
      * Create an input type=file element, and set the onchange event handler which
      * fires if the user selected a file with the fileselector.
      *
      * @type member
-     * @param e {Event|null} appear event
-     * @return {void}
+     * @param el {Element|null}
+     * @return {qx.html.Element}
      */
     _createInputFileTag : function(el)
     {
-      // if (!el.getDomElement()) return;
+      this._disposeInputElement();
 
-      if(this._input)
-      {
-        this._input.name += "_tmp_";
-        this._input.parentNode.removeChild(this._input);
-        this._input = null;
+      var input = qx.bom.Element.create("input", {
+        name : this.getFieldName(),
+        type : "file",
+        disabled : this.getEnabled() === false
+      });
+
+      var Style = qx.bom.element.Style;
+      Style.setStyles(input, {
+        position  : "absolute",
+        left      : "-" + uploadwidget.UploadButton.POSITION_LEFT + "px",
+        fontSize  : "60px",
+        zIndex    : "100",
+        cursor    : "pointer",
+        hidefocus : "true"
+      });
+
+      if (qx.core.Variant.isSet("qx.client", "gecko")) {
+        Style.set(input, "mozOutlineStyle", "none");
       }
 
-      var input  = (this._input = document.createElement("input"));
-      input.type = "file";
-      input.name = this.getFieldName();
-      input.style.position  = "absolute";
-      input.style.left      = "-790px";
-      input.style.fontSize  = "60px";
-      input.style.zIndex    = "100";
-      input.style.cursor    = "hand";
-      input.style.cursor    = "pointer";
-      input.style.filter    = "alpha(opacity=0)";
-      input.style.opacity   = "0";
-      input.style.MozOutlinestyle = "none";
-      input.style.hidefocus = "true";
-      input.disabled        = this.getEnabled() === false;
-      
-      var bounds = this.getBounds();
-      var width = bounds && bounds.width ? bounds.width : 16;
-      var height = bounds && bounds.height ? bounds.height : 16;
-      
-      this._setInputSize(width, height);
+      if (qx.core.Variant.isSet("qx.client", "mshtml")) {
+        Style.set(input, "filter", "alpha(opacity=0)");
+      } else {
+        Style.set(input, "opacity", "0");
+      }
 
-      var _this = this;
-      input.onchange = function(ev) { return _this._onChange(ev); };
+      this._setInputSize(input, this._computeInputSize());
 
-      // Use wrapper. When materialized, qooxdoo adds 'input' element
-      // to container.
-      var inputEl = new qx.html.Element();
-      inputEl.useElement(input);
+      qx.event.Registration.addListener(input, "change", this._onChange, this);
 
-      el.add(inputEl);
+      var qxElement = this._createInputWrapper(input);
+      el.add(qxElement);
+
+      return qxElement;
     },
 
-    _setInputSize: function(width, height)
+
+    /**
+     * @return {Map}
+     */
+    _computeInputSize : function ()
     {
-      var input = this._input;
-      if (!input) return;
+      var bounds = this.getBounds();
 
-      input.style.clip = "rect(auto, " + (791 + width) + "px, auto, 789px)";
-      //input.style.clip = "rect(0px, " + (791 + width) + "px, " + height + "px, 789px)";
-      input.style.height = "" + (height * 2) + "px";
-      input.style.width = (791 + width) + "px";
+      return {
+        width  : bounds && bounds.width ? bounds.width : 16,
+        height : bounds && bounds.height ? bounds.height : 16
+      };
     },
 
+
+    /**
+     * @param input {Element}
+     * @param bounds {Map}
+     * @return {void}
+     */
+    _setInputSize: function(input, bounds)
+    {
+      if (!input) {
+        return
+      }
+
+      var left = uploadwidget.UploadButton.POSITION_LEFT;
+
+      qx.bom.element.Style.setStyles(input, {
+        clip   : "rect(auto, " + (left + 1 + bounds.width) + 
+                 "px, auto, "+(left - 1)+"px)",
+        height : (bounds.height * 2) + "px",
+        width  : (left + 1 + bounds.width) + "px"
+      });
+    },
+
+
+    /**
+     * @param e {Event}
+     * @return {void}
+     */
     _onuploadresize: function(e)
     {
-      var data = e.getData();
-      this._setInputSize(data.width, data.height);
+      if (this._containsInputElement()) {
+        this._setInputSize(this._qxElement.getDomElement(), e.getData());
+      }
     },
+
 
     /**
      * Handle the onchange event of the hidden input type=file element
@@ -278,13 +364,18 @@ qx.Class.define("uploadwidget.UploadButton",
     _onChange : function(e)
     {
       this._valueInputOnChange = true;
-      this.setFieldValue(this._input.value);
+
+      if (this._containsInputElement()) {
+        this.setFieldValue(qx.bom.element.Attribute.get(this._qxElement.getDomElement(), "value"));
+      }
     }
   },
 
 
   destruct : function()
   {
+    this._disposeInputElement();
+
     if (this.__mouseUpListenerId) {
       this.getApplicationRoot().removeListenerById(this.__mouseUpListenerId);
     }
