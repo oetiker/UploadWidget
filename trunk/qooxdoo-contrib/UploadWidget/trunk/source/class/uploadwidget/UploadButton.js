@@ -100,6 +100,10 @@ qx.Class.define("uploadwidget.UploadButton",
 
   members :
   {
+
+    _qxElement : null,
+    _valueInputOnChange : false,
+
     // overridden
     capture : qx.core.Variant.select("qx.client",
     {
@@ -138,7 +142,7 @@ qx.Class.define("uploadwidget.UploadButton",
     _applyFieldName : function(value, old)
     {
       if (this._containsInputElement()) {
-        qx.bom.element.Attribute.set(this._qxElement.getDomElement(), "name", value);
+        qx.bom.element.Attribute.set(this._getInputDomElement(), "name", value);
       }
     },
 
@@ -159,7 +163,7 @@ qx.Class.define("uploadwidget.UploadButton",
     {
       if(this._valueInputOnChange)
       {
-        delete this._valueInputOnChange;
+        this._valueInputOnChange = false;
       }
       else
       {
@@ -185,7 +189,7 @@ qx.Class.define("uploadwidget.UploadButton",
     _resetValue : function ()
     {
       if (this._containsInputElement()) {
-        qx.bom.element.Attribute.set(this._qxElement.getDomElement(), "value", "");
+        qx.bom.element.Attribute.set(this._getInputDomElement(), "value", "");
       }
     },
 
@@ -200,7 +204,7 @@ qx.Class.define("uploadwidget.UploadButton",
     _applyEnabled : function(value, old)
     {
       if (this._containsInputElement()) {
-        qx.bom.element.Attribute.set(this._qxElement.getDomElement(), "disabled", (value === false));
+        qx.bom.element.Attribute.set(this._getInputDomElement(), "disabled", (value === false));
       }
 
       return this.base(arguments, value, old);
@@ -224,10 +228,18 @@ qx.Class.define("uploadwidget.UploadButton",
 
 
     /**
+     * @return {qx.dom.Element}
+     */
+    _getInputDomElement : function () {
+      return this._qxElement.getDomElement();
+    },
+
+
+    /**
      * Use wrapper. When materialized, qooxdoo adds 'input' element
      * to container.
      * 
-     * @param inputElem {qx.bom.Element}
+     * @param inputElem {qx.dom.Element}
      * @return {qx.html.Element}
      */
     _createInputWrapper : function (inputElem)
@@ -246,8 +258,9 @@ qx.Class.define("uploadwidget.UploadButton",
     {
       if(this._containsInputElement())
       {
-        this._qxElement.destroy();
-        this._qxElement = null;
+        var elem = this._getInputElement();
+        elem.dispose();
+        elem = null;
       }
     },
 
@@ -269,14 +282,33 @@ qx.Class.define("uploadwidget.UploadButton",
     {
       this._disposeInputElement();
 
-      var input = qx.bom.Element.create("input", {
+      var elem = qx.bom.Element.create("input", {
         name : this.getFieldName(),
         type : "file",
         disabled : this.getEnabled() === false
       });
 
+      this._setStyles(elem);
+      this._setSize(elem, this._computeSize());
+
+      qx.event.Registration.addListener(elem, "change", this._onChange, this);
+
+      var qxElem = this._createInputWrapper(elem);
+      el.add(qxElem);
+
+      return qxElem;
+    },
+
+
+    /**
+     * @param elem {qx.dom.Element}
+     * @return {void}
+     */
+    _setStyles : function (elem)
+    {
       var Style = qx.bom.element.Style;
-      Style.setStyles(input, {
+
+      Style.setStyles(elem, {
         position  : "absolute",
         left      : "-" + uploadwidget.UploadButton.POSITION_LEFT + "px",
         fontSize  : "60px",
@@ -286,30 +318,21 @@ qx.Class.define("uploadwidget.UploadButton",
       });
 
       if (qx.core.Variant.isSet("qx.client", "gecko")) {
-        Style.set(input, "mozOutlineStyle", "none");
+        Style.set(elem, "mozOutlineStyle", "none");
       }
 
       if (qx.core.Variant.isSet("qx.client", "mshtml")) {
-        Style.set(input, "filter", "alpha(opacity=0)");
+        Style.set(elem, "filter", "alpha(opacity=0)");
       } else {
-        Style.set(input, "opacity", "0");
+        Style.set(elem, "opacity", "0");
       }
-
-      this._setInputSize(input, this._computeInputSize());
-
-      qx.event.Registration.addListener(input, "change", this._onChange, this);
-
-      var qxElement = this._createInputWrapper(input);
-      el.add(qxElement);
-
-      return qxElement;
     },
 
 
     /**
      * @return {Map}
      */
-    _computeInputSize : function ()
+    _computeSize : function ()
     {
       var bounds = this.getBounds();
 
@@ -325,7 +348,7 @@ qx.Class.define("uploadwidget.UploadButton",
      * @param bounds {Map}
      * @return {void}
      */
-    _setInputSize: function(input, bounds)
+    _setSize : function(input, bounds)
     {
       if (!input) {
         return
@@ -349,7 +372,7 @@ qx.Class.define("uploadwidget.UploadButton",
     _onuploadresize: function(e)
     {
       if (this._containsInputElement()) {
-        this._setInputSize(this._qxElement.getDomElement(), e.getData());
+        this._setSize(this._getInputDomElement(), e.getData());
       }
     },
 
@@ -366,7 +389,7 @@ qx.Class.define("uploadwidget.UploadButton",
       this._valueInputOnChange = true;
 
       if (this._containsInputElement()) {
-        this.setFieldValue(qx.bom.element.Attribute.get(this._qxElement.getDomElement(), "value"));
+        this.setFieldValue(qx.bom.element.Attribute.get(this._getInputDomElement(), "value"));
       }
     }
   },
