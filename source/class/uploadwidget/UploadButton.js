@@ -284,8 +284,7 @@ qx.Class.define("uploadwidget.UploadButton",
 
       var elem = qx.bom.Element.create("input", {
         name : this.getFieldName(),
-        type : "file",
-        disabled : this.getEnabled() === false
+        type : "file"
       });
 
       this._setStyles(elem);
@@ -308,24 +307,22 @@ qx.Class.define("uploadwidget.UploadButton",
     {
       var Style = qx.bom.element.Style;
 
+      qx.bom.element.Attribute.set(elem, "hideFocus", "true");
+
       Style.setStyles(elem, {
         position  : "absolute",
-        left      : "-" + uploadwidget.UploadButton.POSITION_LEFT + "px",
+        left      : uploadwidget.UploadButton.POSITION_LEFT * -1,
         fontSize  : "60px",
-        zIndex    : "100",
+        zIndex    : 100,
         cursor    : "pointer",
-        hidefocus : "true"
+        hideFocus : "true"
       });
 
       if (qx.core.Variant.isSet("qx.client", "gecko")) {
         Style.set(elem, "mozOutlineStyle", "none");
       }
 
-      if (qx.core.Variant.isSet("qx.client", "mshtml")) {
-        Style.set(elem, "filter", "alpha(opacity=0)");
-      } else {
-        Style.set(elem, "opacity", "0");
-      }
+      Style.set(elem, "opacity", "0");
     },
 
 
@@ -357,10 +354,12 @@ qx.Class.define("uploadwidget.UploadButton",
       var left = uploadwidget.UploadButton.POSITION_LEFT;
 
       qx.bom.element.Style.setStyles(input, {
-        clip   : "rect(auto, " + (left + 1 + bounds.width) + 
-                 "px, auto, "+(left - 1)+"px)",
-        height : (bounds.height * 2) + "px",
-        width  : (left + 1 + bounds.width) + "px"
+        clip   : {
+          width : bounds.width,
+          left  : left - 1
+        },
+        height : bounds.height * 2,
+        width  : left + bounds.width
       });
     },
 
