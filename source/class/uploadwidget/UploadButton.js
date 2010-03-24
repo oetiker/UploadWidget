@@ -311,7 +311,7 @@ qx.Class.define("uploadwidget.UploadButton",
 
       Style.setStyles(elem, {
         position  : "absolute",
-        left      : uploadwidget.UploadButton.POSITION_LEFT * -1,
+        left      : "-" + uploadwidget.UploadButton.POSITION_LEFT + "px",
         fontSize  : "60px",
         zIndex    : 100,
         cursor    : "pointer",
@@ -358,9 +358,12 @@ qx.Class.define("uploadwidget.UploadButton",
           width : bounds.width,
           left  : left - 1
         },
-        height : bounds.height * 2,
-        width  : left + bounds.width
+        height : (bounds.height * 2) + "px",
+        width  : (left + bounds.width) + "px"
       });
+
+      qx.bom.element.Attribute.set(input, "height", bounds.height * 2);
+      qx.bom.element.Attribute.set(input, "width", left + bounds.width);
     },
 
 
