@@ -234,9 +234,12 @@ qx.Class.define("uploadwidget.UploadForm",
     {
       var form = this.getContentElement().getDomElement();
       var parameters = this.getParameters();
+      var firstChild = form.firstChild;
 
+      // Parameters must be first element so that we can parse them before the file
       for (var id in parameters) {
-        form.appendChild(this._hidden[id]);
+    	form.insertBefore(this._hidden[id], firstChild);
+        //form.appendChild(this._hidden[id]);
       }
     },
 
