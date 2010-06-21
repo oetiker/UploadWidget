@@ -47,7 +47,11 @@ qx.Class.define("uploadwidget.UploadField",
   construct : function(fieldName, label, icon, command)
   {
     this.base(arguments);
-    this._setLayout(new qx.ui.layout.Grid(2,2).setColumnFlex(0,1));
+    this._setLayout(new qx.ui.layout.Grid(2,2)
+                    .setColumnFlex(0,1)
+                    .setColumnAlign(0,'left','middle')
+                    .setColumnAlign(1,'left','middle')
+    );
     this.getChildControl('textfield');
     if (fieldName) {
         this.setFieldName(fieldName);
@@ -245,7 +249,9 @@ qx.Class.define("uploadwidget.UploadField",
         break;
       case "textfield":        
         control = new qx.ui.form.TextField();
-        control.setReadOnly(true);
+        control.set({
+            readOnly: true,
+        });
         this._add(control,{column: 0,row:0});
         break;
       }
