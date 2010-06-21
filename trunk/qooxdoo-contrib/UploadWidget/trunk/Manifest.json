@@ -21,11 +21,16 @@
         "name" : "Petr Kobalicek",
         "user" : "e666e",
         "email" : ""
+      },
+      {
+        "name" : "Tobi Oetiker",
+        "user" : "oetiker",
+        "email" : "tobi@oetiker.ch"
       }
     ],
 
     "version" : "trunk",
-    "qooxdoo-versions": ["0.8", "1.0", "trunk"]
+    "qooxdoo-versions": ["1.1", "trunk"]
   },
   
   "provides" : 

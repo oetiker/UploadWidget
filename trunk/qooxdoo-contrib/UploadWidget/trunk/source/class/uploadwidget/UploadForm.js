@@ -17,13 +17,7 @@
    
    Contributors:
      * Petr Kobalicek (e666e)
-
-************************************************************************ */
-
-/* ************************************************************************
-
-#module(uploadwidget_ui_io)
-#require(qx.xml.Document)
+     * Tobi Oetiker (oetiker)
 
 ************************************************************************ */
 
@@ -53,8 +47,12 @@ qx.Class.define("uploadwidget.UploadForm",
     this.base(arguments);
     
     // Apply initial values
-    if (name) this.setName(name);
-    if (url) this.setUrl(url);
+    if (name) {
+        this.setName(name);
+    }
+    if (url) {
+        this.setUrl(url);
+    }
 
     //this.setHtmlProperty("encoding", encoding || "multipart/form-data");
     var el = this.getContentElement();
@@ -65,8 +63,8 @@ qx.Class.define("uploadwidget.UploadForm",
     el.include();
 
     // Initialize Variables
-    this._parameters = {};
-    this._hidden = {};
+    this.__parameters = {};
+    this.__hidden = {};
     
     // create a hidden iframe which is used as form submission target
     this._createIFrameTarget();
@@ -78,32 +76,32 @@ qx.Class.define("uploadwidget.UploadForm",
 
   destruct: function()
   {
-    if (this._iframeNode)
+    if (this.__iframeNode)
     {
       try
       {
-        document.body.removeChild(this._iframeNode);
-        this._iframeNode.onreadystatechange = null;
-        this._iframeNode.onload = null;
-        this._iframeNode = null;
+        document.body.removeChild(this.__iframeNode);
+        this.__iframeNode.onreadystatechange = null;
+        this.__iframeNode.onload = null;
+        this.__iframeNode = null;
       }
       catch (exc)
       {
-        this.warn("can't remove iframe node from dom.");
+        this.warn("can't remove iframe node from the DOM tree.");
       }
     }
   
-    this._parameters = null;
+    this.__parameters = null;
   
-    for (var id in this._hidden)
+    for (var id in this.__hidden)
     {
-      if(this._hidden[id] && this._hidden[id].parentNode)
+      if(this.__hidden[id] && this.__hidden[id].parentNode)
       {
-        this._hidden[id].parentNode.removeChild(this._hidden[id]);
+        this.__hidden[id].parentNode.removeChild(this.__hidden[id]);
       }
     }
     
-    this._hidden = null;
+    this.__hidden = null;
   },
 
   // --------------------------------------------------------------------------
@@ -159,6 +157,10 @@ qx.Class.define("uploadwidget.UploadForm",
 
   members:
   {
+    __iframeNode: null,
+    __parameters: null,
+    __hidden: null,
+    __isSent: null,
 
     // ------------------------------------------------------------------------
     // [Modifiers]
@@ -197,30 +199,31 @@ qx.Class.define("uploadwidget.UploadForm",
 
       if (qx.core.Variant.isSet("qx.client", "mshtml"))
       {
-        this._iframeNode = document.createElement('<iframe name="' + frameName + '"></iframe>');
+        this.__iframeNode = document.createElement('<iframe name="' + frameName + '"></iframe>');
       }
       else
       {
-        this._iframeNode = document.createElement("iframe");
+        this.__iframeNode = document.createElement("iframe");
       }
 
-      this._iframeNode.id = (this._iframeNode.name = frameName);
-      this._iframeNode.style.display = "none";
+      this.__iframeNode.id = (this.__iframeNode.name = frameName);
+      this.__iframeNode.style.display = "none";
       this.setTarget(frameName);
 
-      document.body.appendChild(this._iframeNode);
+      document.body.appendChild(this.__iframeNode);
 
-      this._iframeNode.onload = qx.lang.Function.bind(this._onLoad, this);
-      this._iframeNode.onreadystatechange = qx.lang.Function.bind(this._onReadyStateChange, this);
+      this.__iframeNode.onload = qx.lang.Function.bind(this._onLoad, this);
+      this.__iframeNode.onreadystatechange = qx.lang.Function.bind(this._onReadyStateChange, this);
     },
-    
+
+    /**
+     * replace the widgets content element with a form element so that we can then send the stuff away.
+     */    
     _createContentElement: function()
     {
-      var el = new qx.html.Element("form");
-      el.useMarkup('<form method="POST" enctype="multipart/form-data"></form>');
-      el.setStyle("overflowX", "hidden");
-      el.setStyle("overflowY", "hidden");
-
+      var el = new qx.html.Element("form",{
+        overflow: 'hidden'
+      });
       return el;
     },
 
@@ -238,8 +241,7 @@ qx.Class.define("uploadwidget.UploadForm",
 
       // Parameters must be first element so that we can parse them before the file
       for (var id in parameters) {
-    	form.insertBefore(this._hidden[id], firstChild);
-        //form.appendChild(this._hidden[id]);
+    	form.insertBefore(this.__hidden[id], firstChild);
       }
     },
 
@@ -276,12 +278,12 @@ qx.Class.define("uploadwidget.UploadForm",
      */
     setParameter: function(id, value)
     {
-      this._parameters[id] = value;
-      if(this._hidden[id] && this._hidden[id].name) {
-        this._hidden[id].value = value;
+      this.__parameters[id] = value;
+      if(this.__hidden[id] && this.__hidden[id].name) {
+        this.__hidden[id].value = value;
       }
       else {
-        this._hidden[id] = this._createHiddenFormField(id, value);
+        this.__hidden[id] = this._createHiddenFormField(id, value);
       }
     },
 
@@ -293,11 +295,11 @@ qx.Class.define("uploadwidget.UploadForm",
      */
     removeParameter: function(id)
     {
-      delete this._parameters[id];
-      if(this._hidden[id] && this._hidden[id].parentNode) {
-        this._hidden[id].parentNode.removeChild(this._hidden[id]);
+      delete this.__parameters[id];
+      if(this.__hidden[id] && this.__hidden[id].parentNode) {
+        this.__hidden[id].parentNode.removeChild(this.__hidden[id]);
       }
-      delete this._hidden[id];
+      delete this.__hidden[id];
     },
 
     /**
@@ -308,7 +310,7 @@ qx.Class.define("uploadwidget.UploadForm",
      */
     getParameter: function(id)
     {
-      return this._parameters[id] || null;
+      return this.__parameters[id] || null;
     },
     
     /**
@@ -318,7 +320,7 @@ qx.Class.define("uploadwidget.UploadForm",
      */
     getParameters: function()
     {
-      return this._parameters;
+      return this.__parameters;
     },
 
     // ------------------------------------------------------------------------
@@ -341,7 +343,7 @@ qx.Class.define("uploadwidget.UploadForm",
 
         form.submit();
 
-        this._isSent = true;
+        this.__isSent = true;
         this.fireEvent("sending");
       }
       else
@@ -362,7 +364,7 @@ qx.Class.define("uploadwidget.UploadForm",
      */
     getIframeWindow: function()
     {
-      return qx.bom.Iframe.getWindow(this._iframeNode);
+      return qx.bom.Iframe.getWindow(this.__iframeNode);
     },
     
     /**
@@ -373,7 +375,7 @@ qx.Class.define("uploadwidget.UploadForm",
      */
     getIframeDocument: function()
     {
-      return qx.bom.Iframe.getDocument(this._iframeNode);
+      return qx.bom.Iframe.getDocument(this.__iframeNode);
     },
 
     /**
@@ -384,7 +386,7 @@ qx.Class.define("uploadwidget.UploadForm",
      */
     getIframeBody: function()
     {
-      return qx.bom.Iframe.getBody(this._iframeNode);
+      return qx.bom.Iframe.getBody(this.__iframeNode);
     },
     
     /**
@@ -395,7 +397,7 @@ qx.Class.define("uploadwidget.UploadForm",
      */
     getIframeNode: function()
     {
-      return this._iframeNode;
+      return this.__iframeNode;
     },
 
     // ------------------------------------------------------------------------
@@ -488,10 +490,10 @@ qx.Class.define("uploadwidget.UploadForm",
      */
     _onReadyStateChange : function(e)
     {
-      if (this.getIframeNode().readyState == "complete" && this._isSent)
+      if (this.getIframeNode().readyState == "complete" && this.__isSent)
       {
         this.fireEvent("completed");
-        delete this._isSent;
+        delete this.__isSent;
       }
     },
 
@@ -505,10 +507,10 @@ qx.Class.define("uploadwidget.UploadForm",
      */
     _onLoad : function(e)
     {
-      if(this._isSent)
+      if(this.__isSent)
       {
         this.fireEvent("completed");
-        delete this._isSent;
+        delete this.__isSent;
       }
     }
   }

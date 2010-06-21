@@ -2,6 +2,7 @@
 
 Copyright:
    2007 Visionet GmbH, http://www.visionet.de
+   2010 OETIKER+PARTNER AG, http://www.oetiker.ch
 
 License:
    LGPL: http://www.gnu.org/licenses/lgpl.html
@@ -11,6 +12,7 @@ License:
 Authors:
    * Dietrich Streifert (level420)
    * Petr Kobalicek (e666e)
+   * Tobi Oetiker (oetiker)
 
 UploadForm and UploadFile Implementation.
 
@@ -49,7 +51,7 @@ form.addListener("completed", function(e)
 });
 
 upload = new uploadwidget.UploadButton("file", "Upload", "/yourIcon.png");
-upload.addListener("changeFieldValue", function(e)
+upload.addListener("changeFileName", function(e)
 {
   if (e.getData() != "") form.send();
 });
