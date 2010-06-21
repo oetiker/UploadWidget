@@ -17,54 +17,50 @@
    
    Contributors:
      * Petr Kobalicek (e666e)     
-
-************************************************************************ */
-
-/* ************************************************************************
-
-#module(uploadwidget_ui_io)
+     * Tobi Oetiker (oetiker)
 
 ************************************************************************ */
 
 /**
  * UploadField: A textfield which holds the filename of the file which
  * should be uploaded and a button which allows selecting the file via the native
- * file selector 
+ * file selector, looking somewhat similar to what people are used to
+ * from web browsers.
+ *
+ * @childControl button {uploadwidget.UploadButton} upload button.
+ * @childControl textfield {qx.ui.form.TextField} read-only textfield next to the upload button
  *
  */
 qx.Class.define("uploadwidget.UploadField",
 {
-  extend : qx.ui.container.Composite,
+  extend : qx.ui.core.Widget,
 
   // --------------------------------------------------------------------------
   // [Constructor]
   // --------------------------------------------------------------------------
 
-  construct : function(fieldName, label, icon)
+  /**
+   * @param fieldName {String} upload field name
+   * @param label {String} button label
+   * @param icon {String} icon path
+   */
+  construct : function(fieldName, label, icon, command)
   {
     this.base(arguments);
-
-    this.setLayout(new qx.ui.layout.HBox().set({spacing: 2}))
-
-    if (fieldName) this.setFieldName(fieldName);
-
-    this._textfield = new qx.ui.form.TextField();
-    this._textfield.setReadOnly(true);
-
-    this._button = new uploadwidget.UploadButton(this.getFieldName(), label, icon);
-    this._button.addListener("changeFieldValue", this._onChangeFieldValue, this);
-
-    this.add(this._textfield, {flex: 1});
-    this.add(this._button);
-  },
-
-  // --------------------------------------------------------------------------
-  // [Destructor]
-  // --------------------------------------------------------------------------
-
-  destruct : function()
-  {
-    this._disposeObjects("_button", "_textfield");
+    this._setLayout(new qx.ui.layout.Grid(2,2).setColumnFlex(0,1));
+    this.getChildControl('textfield');
+    if (fieldName) {
+        this.setFieldName(fieldName);
+    }
+    if (label) {
+        this.setLabel(label);
+    }
+    if (icon) {
+        this.setIcon(icon);
+    }
+    if (command) {
+        this.getChildControl('button').setCommand(command);
+    }
   },
 
   // --------------------------------------------------------------------------
@@ -86,12 +82,44 @@ qx.Class.define("uploadwidget.UploadField",
     /**
      * The value which is assigned to the form
      */
-    fieldValue :
+    fileName :
     {
       check : "String",
       init : "",
-      apply : "_applyFieldValue",
-      event : "changeFieldValue"
+      apply : "_applyFileName",
+      event : "changeFileName",
+      nullable: true
+    },
+
+    /**
+     * The value which is assigned to the form
+     */
+    fileSize :
+    {
+      check : "Integer",
+      init : "",
+      nullable: true
+    },
+
+    /**
+     * The value which is assigned to the form
+     */
+    label :
+    {
+      check : "String",
+      init : "",
+      apply : "_applyLabel",
+      event : "changeLabel"
+    },
+    /**
+     * The icon on the upload button
+     */
+    icon :
+    {
+      check : "String",
+      init : "",
+      apply : "_applyIcon",
+      event : "changeIcon"
     }
   }, 
 
@@ -101,11 +129,6 @@ qx.Class.define("uploadwidget.UploadField",
 
   members :
   {
-    // ------------------------------------------------------------------------
-    // [Instance Variables]
-    // ------------------------------------------------------------------------
-
-    _value : "",
 
     // ------------------------------------------------------------------------
     // [Modifiers]
@@ -120,10 +143,10 @@ qx.Class.define("uploadwidget.UploadField",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyFieldValue : function(value, old)
+    _applyFileName : function(value, old)
     {
-      this._button.setFieldValue(value);
-      this._textfield.setValue(value);
+      this.getChildControl('button').setFileName(value);
+      this.getChildControl('textfield').setValue(value);
     },
 
 
@@ -138,7 +161,29 @@ qx.Class.define("uploadwidget.UploadField",
      */
     _applyFieldName : function(value, old)
     {
-      if (this._button) this._button.setFieldName(value);
+        this.getChildControl('button').setFieldName(value);
+    },
+    /**
+     * Upload butotn label modifier.
+     *
+     * @type member
+     * @param value {var} Current value
+     * @param old {var} Previous value
+     */
+    _applyLabel : function(value, old)
+    {
+        this.getChildControl('button').setLabel(value);
+    },
+    /**
+     * Upload button icon modifier.
+     *
+     * @type member
+     * @param value {var} Current value
+     * @param old {var} Previous value
+     */
+    _applyIcon : function(value, old)
+    {
+        this.getChildControl('button').setIcon(value);
     },
 
     // ------------------------------------------------------------------------
@@ -147,18 +192,20 @@ qx.Class.define("uploadwidget.UploadField",
    
     /**
      * Returns component text field widget.
+     * @deprecated Use getChildControl('textfield');
      */
     getTextField: function()
     {
-      return this._textfield;
+      return this.getChildControl('textfield');
     },
 
     /**
-     * Returns component button widget.
+     * Returns component button widget. 
+     * @deprecated Use getChildControl('textfield')
      */
     getButton: function()
     {
-      return this._button;
+      return this.getChildControl('button');
     },
     
     // ------------------------------------------------------------------------
@@ -174,11 +221,35 @@ qx.Class.define("uploadwidget.UploadField",
      * @param e {Event} change value event data
      * @return {void}
      */
-    _onChangeFieldValue : function(e)
+    _onChangeFileName : function(e)
     {
       var value = e.getData();
-      this._textfield.setValue(value);
-      this.setFieldValue(value);
+      this.getChildControl('textfield').setValue(value);
+    },
+
+    // ------------------------------------------------------------------------
+    // [Child Controls]
+    // ------------------------------------------------------------------------
+
+    /**
+     * Create the widget child controls.
+     */
+
+    _createChildControlImpl: function(id) {
+      var control;
+      switch(id) {
+      case "button":
+        control = new uploadwidget.UploadButton(this.getFieldName(), this.getLabel(), this.getIcon());
+        this._add(control,{column: 1,row:0});
+        control.addListener("changeFileName", this._onChangeFileName, this);        
+        break;
+      case "textfield":        
+        control = new qx.ui.form.TextField();
+        control.setReadOnly(true);
+        this._add(control,{column: 0,row:0});
+        break;
+      }
+      return control || this.base(arguments, id);
     }
   }
 });

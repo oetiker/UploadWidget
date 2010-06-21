@@ -1,35 +1,38 @@
-// UploadWidget - config json
 {
-  "name" : "UploadWidget config.json",
-  
+  "name"    : "UploadWidget",
+
   "include" :
   [
     {
       "path" : "${QOOXDOO_PATH}/tool/data/config/application.json"
     }
   ],
-  
+
+  "export" :
+  [
+    "api",
+    "clean",
+    "distclean",
+    "fix",
+    "info",
+    "inspector",
+    "lint",
+    "migration",
+    "pretty",
+    "test",
+    "test-source",
+    "translation"
+  ],
+
   "let" :
   {
     "APPLICATION"  : "uploadwidget",
-    "QOOXDOO_PATH" : "../../qooxdoo/trunk",
-    "QOOXDOO_URI"  : "../${QOOXDOO_PATH}",
-    "TEST_INCLUDE" : "${APPLICATION}.*",
+    "APPLICATION_MAIN_CLASS" : "${APPLICATION}.demo.Demo",
+    "QOOXDOO_PATH" : "../../qooxdoo/1.1",
+    "QXTHEME"      : "qx.theme.Modern",
+    "API_EXCLUDE"  : ["qx.test.*", "qxjqplot.demo.*", "${APPLICATION}.theme.*", "${APPLICATION}.test.*"],
+    "LOCALES"      : [ "en" ],
+    "CACHE"        : "${TMPDIR}/qooxdoo-cache",
     "ROOT"         : "."
-  },
-  
-  
-  "jobs" :
-  {
-    "api-light" :
-    {
-      "extend" : [ "api" ],
-
-      "let" :
-      {
-        "API_INCLUDE"  : ["${APPLICATION}.*"],
-        "API_EXCLUDE"  : ["qx.*"]
-      }
-    }
   }
 }
