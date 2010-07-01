@@ -250,7 +250,7 @@ qx.Class.define("uploadwidget.UploadField",
       case "textfield":        
         control = new qx.ui.form.TextField();
         control.set({
-            readOnly: true,
+            readOnly: true
         });
         this._add(control,{column: 0,row:0});
         break;
