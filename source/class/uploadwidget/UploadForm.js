@@ -57,7 +57,7 @@ qx.Class.define("uploadwidget.UploadForm",
     //this.setHtmlProperty("encoding", encoding || "multipart/form-data");
     var el = this.getContentElement();
     el.setAttributes({
-      encoding: encoding || "multipart/form-data",
+      enctype: encoding || "multipart/form-data",
       method: "POST"
     });
     el.include();
