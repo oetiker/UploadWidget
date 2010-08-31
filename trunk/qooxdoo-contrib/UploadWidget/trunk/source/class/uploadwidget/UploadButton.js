@@ -163,7 +163,7 @@ qx.Class.define("uploadwidget.UploadButton",
       }
       else
       {
-          throw new Error("You can not change the value if a fileName field. Reset the form after instead!");
+          throw new Error("You can not change the value if a fileName field. Reset the form after instead using the .clear() method!");
       }
     },
 

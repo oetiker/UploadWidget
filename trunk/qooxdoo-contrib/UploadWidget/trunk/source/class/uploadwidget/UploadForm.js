@@ -352,6 +352,25 @@ qx.Class.define("uploadwidget.UploadForm",
       }
     },
 
+
+    /**
+     * clear the form
+     * 
+     * @return {void}
+     */
+    clear: function()
+    {
+      var form = this.getContentElement().getDomElement();
+
+      if (form) {
+        form.reset();
+      }
+      else {
+        throw new Error("Form element not created! Unable to call form reset!");
+      }
+    },
+
+
     // ------------------------------------------------------------------------
     // [Iframe]
     // ------------------------------------------------------------------------
