@@ -165,29 +165,18 @@ qx.Class.define("uploadwidget.UploadButton",
       {
         if (!value || value == "")
         {
-          if (qx.bom.client.Engine.MSHTML && qx.bom.client.Engine.VERSION < 9.0) {
+            // there is no way to change the value of an input
+            // field from js as far as I know ... but we can
+            // delete it and have use created a new one.
             this.getChildControl('input').dispose();
-            // delete the control so that it gets recreated
-            // when used next
             delete this._getCreatedChildControls().input;
-          } else {
-            this._resetValue();
-          }
+            this.setFieldName(this.getFieldName());
         }
         else
         {
           throw new Error("Unable to set value to non null or non empty!");
         }
       }
-    },
-
-
-    /**
-     * @return {void}
-     */
-    _resetValue : function ()
-    {
-      this.getChildControl('input').setAttribute("value","",true);
     },
 
 
