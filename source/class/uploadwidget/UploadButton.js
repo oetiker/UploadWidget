@@ -58,6 +58,9 @@ qx.Class.define("uploadwidget.UploadButton",
   // [Properties]
   // --------------------------------------------------------------------------
 
+  events: {
+    changeFileName: 'qx.event.type.Data'
+  },
   properties:
   {
     /**
@@ -77,8 +80,7 @@ qx.Class.define("uploadwidget.UploadButton",
     {
       check : "String",
       init : "",
-      apply : "_applyFileName",
-      event : "changeFileName"
+      apply : "_applyFileName"
     },
 
     /**
@@ -163,7 +165,7 @@ qx.Class.define("uploadwidget.UploadButton",
       }
       else
       {
-          throw new Error("You can not change the value if a fileName field. Reset the form after instead using the .clear() method!");
+          throw new Error("You can not change the value if a fileName field. Reset the form instead by using  the .clear() method!");
       }
     },
 
@@ -231,7 +233,9 @@ qx.Class.define("uploadwidget.UploadButton",
                 && controlDom.files.length > 0 ){
                 this.setFileSize(controlDom.files[0].fileSize);
             }            
-            this.setFileName(e.getData());
+            var value = e.getData();
+            this.setFileName(value);
+            this.fireDataEvent('changeFileName',value);
         },this);
 
         this.getContainerElement().addAt(control,0);
