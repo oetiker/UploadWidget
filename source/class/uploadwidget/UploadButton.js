@@ -163,19 +163,7 @@ qx.Class.define("uploadwidget.UploadButton",
       }
       else
       {
-        if (!value || value == "")
-        {
-            // there is no way to change the value of an input
-            // field from js as far as I know ... but we can
-            // delete it and have use created a new one.
-            this.getChildControl('input').dispose();
-            delete this._getCreatedChildControls().input;
-            this.setFieldName(this.getFieldName());
-        }
-        else
-        {
-          throw new Error("Unable to set value to non null or non empty!");
-        }
+          throw new Error("You can not change the value if a fileName field. Reset the form after instead!");
       }
     },
 
