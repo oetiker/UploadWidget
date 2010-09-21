@@ -60,8 +60,12 @@ qx.Class.define("uploadwidget.UploadForm",
       enctype: encoding || "multipart/form-data",
       method: "POST"
     });
+    if ( qx.bom.client.Browser.NAME == 'ie' &&  qx.bom.client.Browser.VERSION < 8){
+        el.setAttributes({
+            encoding: encoding || "multipart/form-data"
+        })
+    }
     el.include();
-
     // Initialize Variables
     this.__parameters = {};
     this.__hidden = {};
