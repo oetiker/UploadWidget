@@ -159,13 +159,16 @@ qx.Class.define("uploadwidget.UploadButton",
      */
     _applyFileName : function(value, old)
     {
+      if (value == old){ // can not change, but setting it to what it is is fine
+        return;
+      }
       if(this.__valueInputOnChange)
       {
         this.__valueInputOnChange = false;
       }
       else
       {
-          throw new Error("You can not change the value if a fileName field. Reset the form instead by using  the .clear() method!");
+          throw new Error("You can not change the value of a fileName field. Reset the form instead by using  the .clear() method!");
       }
     },
 

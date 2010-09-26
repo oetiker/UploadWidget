@@ -149,7 +149,10 @@ qx.Class.define("uploadwidget.UploadField",
      */
     _applyFileName : function(value, old)
     {
-      this.getChildControl('button').setFileName(value);
+      
+      // the value of the file can not be changed,
+      // so do not try
+      // this.getChildControl('button').setFileName(value);
       this.getChildControl('textfield').setValue(value);
     },
 
@@ -228,7 +231,8 @@ qx.Class.define("uploadwidget.UploadField",
     _onChangeFileName : function(e)
     {
       var value = e.getData();
-      this.getChildControl('textfield').setValue(value);
+      this.setFileName(value);
+      this.setFileSize(this.getChildControl('button').getFileSize());
     },
 
     // ------------------------------------------------------------------------
