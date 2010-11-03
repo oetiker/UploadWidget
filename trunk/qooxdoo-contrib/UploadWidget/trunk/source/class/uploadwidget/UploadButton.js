@@ -213,8 +213,8 @@ qx.Class.define("uploadwidget.UploadButton",
             zIndex: this.getZIndex() + 11,
             opacity: 0,
             // align to the top right hand corner
-            top: 0,
-            right: 0,
+            top: -5,
+            right: -5,
             // ff ignores the width setting
             // pick a realy large font size to get
             // a huge button that covers
@@ -241,7 +241,7 @@ qx.Class.define("uploadwidget.UploadButton",
             this.fireDataEvent('changeFileName',value);
         },this);
 
-        this.getContainerElement().addAt(control,0);
+        this.getContentElement().addAt(control,0);
         // qx.dom.Element.insertBegin(control,this.getContainerElement());
         break;
       }
