@@ -184,7 +184,7 @@ qx.Class.define("uploadwidget.UploadButton",
     {
       // just move it behind the button, do not actually
       // disable it since this would stop any upload in progress
-      this.getChildControl('input').setStyle('z-index',value ? this.getZIndex() + 11 : -10000);
+      this.getChildControl('input').setStyle('zIndex',value ? this.getZIndex() + 11 : -10000);
       return this.base(arguments, value, old);
     },
 
