@@ -44,12 +44,13 @@ qx.Class.define("uploadwidget.UploadButton",
   {
     this.base(arguments, label, icon, command);
 
+    this.__inputEl = this._createInput();
+    if (fieldName) {
+       this.setFieldName(fieldName);
+    }
 
     this.addListener('appear',function(){
-        this.__inputEl = this._createInput();
-        if (fieldName) {
-          this.setFieldName(fieldName);
-        }
+        this.getContentElement().addAt(this.__inputEl,0);
     },this);
 
     // Fix for bug #3027
@@ -244,8 +245,6 @@ qx.Class.define("uploadwidget.UploadButton",
             this.fireDataEvent('changeFileName',value);
         },this);
 
-        this.getContentElement().addAt(control,0);
-        // qx.dom.Element.insertBegin(control,this.getContainerElement());
        return control;
     }
   },
