@@ -48,6 +48,8 @@ qx.Class.define("uploadwidget.UploadButton",
       this.setFieldName(fieldName);
     }
 
+    this.__inputEl = this._createInput();
+
     // Fix for bug #3027
     if (qx.bom.client.Engine.OPERA) {
       this.setSelectable(true);
@@ -103,6 +105,7 @@ qx.Class.define("uploadwidget.UploadButton",
 
     __valueInputOnChange : false,
     __mouseUpListenerId: null,
+    __inputEl: null,
 
     // overridden
     capture : qx.core.Variant.select("qx.client",
@@ -141,7 +144,7 @@ qx.Class.define("uploadwidget.UploadButton",
      */
     _applyFieldName : function(value, old)
     {
-      this.getChildControl('input').setAttribute("name", value,true);
+      this.__inputEl.setAttribute("name", value,true);
     },
 
 
@@ -184,7 +187,7 @@ qx.Class.define("uploadwidget.UploadButton",
     {
       // just move it behind the button, do not actually
       // disable it since this would stop any upload in progress
-      this.getChildControl('input').setStyle('zIndex',value ? this.getZIndex() + 11 : -10000);
+      this.__inputEl.setStyle('zIndex',value ? this.getZIndex() + 11 : -10000);
       return this.base(arguments, value, old);
     },
 
@@ -192,10 +195,8 @@ qx.Class.define("uploadwidget.UploadButton",
      * Create the widget child controls.
      */
 
-    _createChildControlImpl: function(id) {
+    _createInput: function() {
       var control;
-      switch(id) {
-      case "input":       
         // styling the input[type=file]
         // element is a bit tricky. Some browsers just ignore the normal
         // css style input. Firefox is especially tricky in this regard.
@@ -243,9 +244,7 @@ qx.Class.define("uploadwidget.UploadButton",
 
         this.getContentElement().addAt(control,0);
         // qx.dom.Element.insertBegin(control,this.getContainerElement());
-        break;
-      }
-      return control || this.base(arguments, id);
+       return control;
     }
   },
 
