@@ -44,11 +44,13 @@ qx.Class.define("uploadwidget.UploadButton",
   {
     this.base(arguments, label, icon, command);
 
-    if (fieldName) {
-      this.setFieldName(fieldName);
-    }
 
-    this.__inputEl = this._createInput();
+    this.addListener('appear',function(){
+        this.__inputEl = this._createInput();
+        if (fieldName) {
+          this.setFieldName(fieldName);
+        }
+    },this);
 
     // Fix for bug #3027
     if (qx.bom.client.Engine.OPERA) {
@@ -228,7 +230,7 @@ qx.Class.define("uploadwidget.UploadButton",
 
         control =  new qx.html.Element('input',css,{        
             type : 'file',
-            name : this.getFieldName()
+            name : ''
         }); 
         control.addListener("change", function(e){
             var controlDom = control.getDomElement();
