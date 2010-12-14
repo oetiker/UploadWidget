@@ -93,7 +93,7 @@ qx.Class.define("uploadwidget.demo.Application",
 
       form.addListener('completed',function(e) {
         alert('completed');
-        file.setFieldValue('');
+        form.clear();
         var response = this.getIframeHtmlContent();
         alert('response:'+response);
       });
