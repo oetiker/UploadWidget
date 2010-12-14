@@ -94,7 +94,7 @@ qx.Class.define("uploadwidget.demo.Application",
       form.addListener('completed',function(e) {
         alert('completed');
         form.clear();
-        var response = this.getIframeHtmlContent();
+        var response = form.getIframeTextContent();
         alert('response:'+response);
       });
 
