@@ -50,7 +50,7 @@ qx.Class.define("uploadwidget.UploadButton",
     }
 
     this.addListener('appear',function(){
-        this.getContentElement().addAt(this.__inputEl,0);
+        this.getContainerElement().addAt(this.__inputEl,0);
     },this);
 
     // Fix for bug #3027
@@ -132,7 +132,6 @@ qx.Class.define("uploadwidget.UploadButton",
         this.base(arguments);
       }
     }),
-
 
     // ------------------------------------------------------------------------
     // [Modifiers]
@@ -217,8 +216,8 @@ qx.Class.define("uploadwidget.UploadButton",
             zIndex: this.getZIndex() + 11,
             opacity: 0,
             // align to the top right hand corner
-            top: -5,
-            right: -5,
+            top: '0px',
+            right: '0px',
             // ff ignores the width setting
             // pick a realy large font size to get
             // a huge button that covers
@@ -227,6 +226,8 @@ qx.Class.define("uploadwidget.UploadButton",
         };
         if (qx.bom.client.Engine.MSHTML && qx.bom.client.Engine.VERSION < 9.0) {
             css.filter = 'alpha(opacity=0)';
+            css.width = '200%';
+            css.height = '100%';
         }
 
         control =  new qx.html.Element('input',css,{        
