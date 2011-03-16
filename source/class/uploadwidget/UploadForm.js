@@ -201,21 +201,12 @@ qx.Class.define("uploadwidget.UploadForm",
     {
       var frameName = "frame_" + (new Date).valueOf();
 
-      if (qx.core.Variant.isSet("qx.client", "mshtml") && ( qx.bom.client.Browser.DOCUMENT_MODE == null || qx.bom.client.Browser.DOCUMENT_MODE == 5))
-      {
-        this.__iframeNode = document.createElement('<iframe name="' + frameName + '"></iframe>');
-      }
-      else
-      {
-        this.__iframeNode = document.createElement("iframe");
-      }
-
-      this.__iframeNode.id = (this.__iframeNode.name = frameName);
-      this.__iframeNode.style.display = "none";
+      var iframe = new qx.html.Iframe('about:',{display: 'none'}, { id: frameName, name: frameName});
+      // make sure the element is created
+      qx.html.Element.flush();
+      this.__iframeNode = iframe.getDomElement();
       this.setTarget(frameName);
-
       document.body.appendChild(this.__iframeNode);
-
       this.__iframeNode.onload = qx.lang.Function.bind(this._onLoad, this);
       this.__iframeNode.onreadystatechange = qx.lang.Function.bind(this._onReadyStateChange, this);
     },
