@@ -49,7 +49,7 @@ qx.Class.define("uploadwidget.UploadButton",
        this.setFieldName(fieldName);
     }
 
-    this.addListener('appear',function(){
+    this.addListenerOnce('appear',function(){
         this.getContainerElement().addAt(this.__inputEl,0);
     },this);
 
