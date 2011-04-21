@@ -54,7 +54,7 @@ qx.Class.define("uploadwidget.UploadButton",
     },this);
 
     // Fix for bug #3027
-    if (qx.bom.client.Engine.OPERA) {
+    if ( ( qx.core.Environment && qx.core.Environment.get('browser.name') == 'opera') || ( !  qx.core.Environment && qx.bom.client.Engine.OPERA )) {
       this.setSelectable(true);
     }
   },
@@ -224,7 +224,8 @@ qx.Class.define("uploadwidget.UploadButton",
             // the area of the upload button
             fontSize: '400px'
         };
-        if (qx.bom.client.Engine.MSHTML && qx.bom.client.Engine.VERSION < 9.0) {
+        if ((qx.core.Environment && qx.core.Environment.get('browser.name') == 'ie' && qx.core.Environment.get('browser.version') < 9 )
+            || ( ! qx.core.Environment && qx.bom.client.Engine.MSHTML && qx.bom.client.Engine.VERSION < 9.0)) {
             css.filter = 'alpha(opacity=0)';
             css.width = '200%';
             css.height = '100%';
