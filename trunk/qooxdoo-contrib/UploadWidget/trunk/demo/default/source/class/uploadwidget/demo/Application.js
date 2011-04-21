@@ -92,10 +92,10 @@ qx.Class.define("uploadwidget.demo.Application",
       form.add(file, {left:0,top:0});
 
       form.addListener('completed',function(e) {
-        alert('completed');
+        window.alert('completed');
         form.clear();
         var response = form.getIframeTextContent();
-        alert('response:'+response);
+        window.alert('response:'+response);
       });
 
       form.addListener('sending',function(e) {
@@ -104,7 +104,7 @@ qx.Class.define("uploadwidget.demo.Application",
 
       file.addListener('changeFileName',function(e){
         if(e.getData()!='') {
-            alert(file.getFileName() + ' - ' + file.getFileSize() + ' Bytes');
+            window.alert(file.getFileName() + ' - ' + file.getFileSize() + ' Bytes');
             form.send();
         }
       });
