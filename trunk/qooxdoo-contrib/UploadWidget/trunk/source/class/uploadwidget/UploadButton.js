@@ -257,4 +257,3 @@ qx.Class.define("uploadwidget.UploadButton",
       this.getApplicationRoot().removeListenerById(this.__mouseUpListenerId);
     }
   }
-});
