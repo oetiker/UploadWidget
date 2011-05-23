@@ -110,6 +110,11 @@ qx.Class.define("uploadwidget.UploadButton",
     __mouseUpListenerId: null,
     __inputEl: null,
 
+    getInputElement : function()
+    {
+      return this.__inputEl;
+    },
+
     // overridden
     capture : qx.core.Variant.select("qx.client",
     {
