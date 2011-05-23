@@ -116,7 +116,7 @@ qx.Class.define("uploadwidget.UploadButton",
     },
 
     // overridden
-    capture : qx.core.Variant.select("qx.client",
+    capture : qx.core.Environment.select("engine.name",
     {
       "mshtml" : function() {
         this.__mouseUpListenerId = this.getApplicationRoot().addListenerOnce("mouseup", this._onMouseUp, this);
@@ -129,7 +129,7 @@ qx.Class.define("uploadwidget.UploadButton",
 
 
     // overridden
-    releaseCapture : qx.core.Variant.select("qx.client",
+    releaseCapture : qx.core.Environment.select("engine.name",
     {
       "mshtml" : qx.lang.Function.empty,
 
@@ -262,3 +262,4 @@ qx.Class.define("uploadwidget.UploadButton",
       this.getApplicationRoot().removeListenerById(this.__mouseUpListenerId);
     }
   }
+});
