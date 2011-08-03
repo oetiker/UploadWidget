@@ -21,6 +21,12 @@
 
 ************************************************************************ */
 
+/*
+The 'change' event on the input field requires that this handler be available:
+#use(qx.event.handler.Input)
+*/
+
+
 /**
  * An upload button which allows selection of a file through the browser fileselector.
  *
