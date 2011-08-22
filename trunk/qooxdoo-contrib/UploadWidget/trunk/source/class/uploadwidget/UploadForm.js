@@ -60,8 +60,7 @@ qx.Class.define("uploadwidget.UploadForm",
       enctype: encoding || "multipart/form-data",
       method: "POST"
     });
-    if ( (qx.core.Environment && qx.core.Environment.get('browser.name') == 'ie' && qx.core.Environment.get('browser.version') < 8 )
-        || ( ! qx.core.Environment && qx.bom.client.Browser.NAME == 'ie' &&  qx.bom.client.Browser.VERSION < 8)){
+    if (qx.core.Environment.get('browser.name') == 'ie' && qx.core.Environment.get('browser.version') < 8 ) {
         el.setAttributes({
             encoding: encoding || "multipart/form-data"
         })
@@ -202,8 +201,7 @@ qx.Class.define("uploadwidget.UploadForm",
     {
       var frameName = "frame_" + (new Date).valueOf();
 
-     if ( (qx.core.Environment && qx.core.Environment.get('browser.name') == 'ie' && qx.core.Environment.get('browser.version') < 8 )
-        || ( ! qx.core.Environment && qx.bom.client.Browser.NAME == 'ie' &&  qx.bom.client.Browser.VERSION < 8)){
+     if (qx.core.Environment.get('browser.name') == 'ie' && qx.core.Environment.get('browser.version') < 8 ) {
         this.__iframeNode = document.createElement('<iframe name="' + frameName + '"></iframe>');
       }
       else
