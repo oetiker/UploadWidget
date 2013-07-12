@@ -235,10 +235,12 @@ qx.Class.define("uploadwidget.UploadButton",
             // the area of the upload button
             fontSize: '400px'
         };
-        if ( qx.core.Environment.get('browser.name') == 'ie' && qx.core.Environment.get('browser.version') < 9 ) {
-            css.filter = 'alpha(opacity=0)';
-            css.width = '200%';
+        if ( qx.core.Environment.get('browser.name') == 'ie' ) {
+            if(qx.core.Environment.get('browser.version') < 9 ) {
+              css.filter = 'alpha(opacity=0)';
+            }
             css.height = '100%';
+            css.width = '200%';
         }
 
         control =  new qx.html.Element('input',css,{        
@@ -266,6 +268,8 @@ qx.Class.define("uploadwidget.UploadButton",
 
   destruct : function()
   {
+    this.__inputEl = null;
+    
     if (this.__mouseUpListenerId) {
       this.getApplicationRoot().removeListenerById(this.__mouseUpListenerId);
     }
