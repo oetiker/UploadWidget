@@ -137,7 +137,7 @@ qx.Class.define("uploadwidget.UploadButton",
     // overridden
     releaseCapture : qx.core.Environment.select("engine.name",
     {
-      "mshtml" : qx.lang.Function.empty,
+      "mshtml" : function() {},
 
       "default" : function() {
         this.base(arguments);
