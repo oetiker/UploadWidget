@@ -56,7 +56,7 @@ qx.Class.define("uploadwidget.UploadButton",
     }
 
     this.addListenerOnce('appear',function(){
-        this.getContainerElement().addAt(this.__inputEl,0);
+        this.getContentElement().addAt(this.__inputEl,0);
     },this);
 
     // Fix for bug #3027
