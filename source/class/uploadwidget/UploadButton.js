@@ -22,9 +22,13 @@
 ************************************************************************ */
 
 /*
-The 'change' event on the input field requires that this handler be available:
-#use(qx.event.handler.Input)
+  The 'change' event on the input field requires that this handler be available:
 */
+
+/**
+ * @use(qx.event.handler.Input)
+ */
+
 
 
 /**
