@@ -272,8 +272,8 @@ qx.Class.define("uploadwidget.UploadForm",
     /**
      * Set a request parameter which is stored as an input type=hidden.
      * 
-     * @param id String identifier of the parameter to add.
-     * @param value String Value of parameter.
+     * @param id {String} identifier of the parameter to add.
+     * @param value {String} Value of parameter.
      * @return {void}
      */
     setParameter: function(id, value)
@@ -290,7 +290,7 @@ qx.Class.define("uploadwidget.UploadForm",
     /**
      * Remove a parameter from the request.
      * 
-     * @param id String identifier of the parameter to remove.
+     * @param id {String} identifier of the parameter to remove.
      * @return {void}
      */
     removeParameter: function(id)
@@ -305,7 +305,7 @@ qx.Class.define("uploadwidget.UploadForm",
     /**
      * Get a parameter in the request.
      * 
-     * @param id String identifier of the parameter to get.
+     * @param id {String} identifier of the parameter to get.
      * @return {String}
      */
     getParameter: function(id)
