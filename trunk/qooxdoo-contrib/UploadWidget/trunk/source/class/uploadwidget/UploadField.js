@@ -195,7 +195,7 @@ qx.Class.define("uploadwidget.UploadField",
    
     /**
      * Returns component text field widget.
-     * @deprecated Use getChildControl('textfield');
+     * @deprecated {0.4} Use getChildControl('textfield');
      */
     getTextField: function()
     {
@@ -204,7 +204,7 @@ qx.Class.define("uploadwidget.UploadField",
 
     /**
      * Returns component button widget. 
-     * @deprecated Use getChildControl('button')
+     * @deprecated {0.4} Use getChildControl('button')
      */
     getButton: function()
     {
