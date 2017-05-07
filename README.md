@@ -1,4 +1,4 @@
-===== UploadWidget =====
+# UploadWidget
 
 Copyright:
    2007 Visionet GmbH, http://www.visionet.de
