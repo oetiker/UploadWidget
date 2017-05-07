@@ -1,15 +1,18 @@
 # UploadWidget
 
 Copyright:
-   2007 Visionet GmbH, http://www.visionet.de
-   2010 OETIKER+PARTNER AG, http://www.oetiker.ch
+
+   * 2007 Visionet GmbH, http://www.visionet.de
+   * 2010 OETIKER+PARTNER AG, http://www.oetiker.ch
 
 License:
-   LGPL: http://www.gnu.org/licenses/lgpl.html
-   EPL: http://www.eclipse.org/org/documents/epl-v10.php
-   See the LICENSE file in the project's top-level directory for details.
+
+   * LGPL: http://www.gnu.org/licenses/lgpl.html
+   * EPL: http://www.eclipse.org/org/documents/epl-v10.php
+   * See the LICENSE file in the project's top-level directory for details.
 
 Authors:
+
    * Dietrich Streifert (level420)
    * Petr Kobalicek (e666e)
    * Tobi Oetiker (oetiker)
@@ -31,16 +34,11 @@ selector is completed.
 
 Multiple UploadFile instances are possible. The text field is read-only.
 
-The differences to uploadwidget to qooxdoo 0.7.3:
-- name property renamed to fieldName
-- value property renamed to fieldValue
-- request method can be only "POST" now
-- encoding can be only "multipart/form-data"
-
 I think that "POST" and "multipart/form-data" only is not really limitation. I never used something else in my life. Enjoy this port!
 
 Example:
 
+```javascript
 var form, upload;
 
 form = new uploadwidget.UploadForm("upload", "/url/");
@@ -63,3 +61,4 @@ var upload;
 
 upload = new uploadwidget.UploadButton("file", "Upload", "/yourIcon.png");
 upload.set({appearance : "toolbar-button"});
+```
