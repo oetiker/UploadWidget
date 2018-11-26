@@ -25,7 +25,7 @@
 /**
  * uploadWidget Example application
  */
-qx.Class.define("uploadwidget.demo.Application",
+qx.Class.define("uploaddemo.Application",
 {
   extend : qx.application.Standalone,
 

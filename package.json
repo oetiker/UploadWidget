@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "qxcompiler": "^0.2.13",
+    "qooxdoo-sdk": "^6.0.0-alpha"
+  },
+  "scripts": {
+    "lint": "eslint ./source/class/osparc/**/*.js",
+    "build": "node_modules/.bin/qx compile --target=source"
+  }
+}

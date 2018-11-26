@@ -9,7 +9,7 @@
     "keywords" : ["qooxdoo", "widget", "cross-browser", "upload"],
     "homepage" : "https://github.com/oetiker/UploadWidget",
 
-    "license" : "LGPL/EPL",
+    "license" : "MIT license",
     "authors" : 
     [
       {
@@ -29,8 +29,8 @@
       }
     ],
 
-    "version" : "trunk",
-    "qooxdoo-versions": ["1.4 - 5.x"]
+    "version" : "0.8.0",
+    "qooxdoo-range": "6.0.0-alpha-20180529 - 6.x"
   },
   
   "provides" : 
@@ -40,7 +40,7 @@
     "class"       : "source/class",
     "resource"    : "source/resource",
     "translation" : "source/translation",
-    "type"        : "library"
+    "type"        : "contribution"
   }
 }
 

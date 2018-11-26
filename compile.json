@@ -1,0 +1,40 @@
+{
+  "targets": [
+    {
+      "type": "source",
+      "outputPath": "source-output"
+    },
+    {
+      "type": "hybrid",
+      "outputPath": "hybrid-output"
+    },
+    {
+      "type": "build",
+      "outputPath": "build-output"
+    }
+  ],
+  "defaultTarget": "hybrid",
+  "serve": {
+    "listenPort": 8744
+  },
+  "locales": [
+    "en",
+    "de",
+    "fr"
+  ],
+  "environment": {
+    "qx.icontheme": "Tango"
+  },
+  "applications": [
+    {
+      "class": "uploaddemo.Application",
+      "theme": "qx.theme.Simple",
+      "name": "uploaddemo",
+      "writeIndexHtmlToRoot": true
+    }
+  ],
+  "libraries": [
+    "./node_modules/qooxdoo-sdk/framework",
+    "."
+  ]
+}

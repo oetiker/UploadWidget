@@ -3,12 +3,11 @@
 Copyright:
 
    * 2007 Visionet GmbH, http://www.visionet.de
-   * 2010 OETIKER+PARTNER AG, http://www.oetiker.ch
+   * 2018 OETIKER+PARTNER AG, http://www.oetiker.ch
 
 License:
 
-   * LGPL: http://www.gnu.org/licenses/lgpl.html
-   * EPL: http://www.eclipse.org/org/documents/epl-v10.php
+   * MIT
    * See the LICENSE file in the project's top-level directory for details.
 
 Authors:
