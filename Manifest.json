@@ -1,46 +1,42 @@
 {
-  "info" : 
-  {
-    "name" : "UploadWidget",
-
-    "summary" : "Widget for HTTP file uploads.",
-    "description" : "",
-    
-    "keywords" : ["qooxdoo", "widget", "cross-browser", "upload"],
-    "homepage" : "https://github.com/oetiker/UploadWidget",
-
-    "license" : "MIT license",
-    "authors" : 
-    [
+  "info": {
+    "name": "UploadWidget",
+    "summary": "Widget for HTTP file uploads.",
+    "description": "",
+    "keywords": [
+      "qooxdoo",
+      "widget",
+      "cross-browser",
+      "upload"
+    ],
+    "homepage": "https://github.com/oetiker/UploadWidget",
+    "license": "MIT license",
+    "authors": [
       {
         "name" : "Dietrich Streifert",
-        "user" : "level420",
         "email" : ""
       },
       {
         "name" : "Petr Kobalicek",
-        "user" : "e666e",
         "email" : ""
       },
       {
         "name" : "Tobi Oetiker",
-        "user" : "oetiker",
         "email" : "tobi@oetiker.ch"
       }
     ],
-
-    "version" : "1.0.1",
-    "qooxdoo-range": "6.0.0-alpha-20180529 - 6.x"
+    "version": "1.0.2"
   },
-  
-  "provides" : 
-  {
-    "namespace"   : "uploadwidget",
-    "encoding"    : "utf-8",
-    "class"       : "source/class",
-    "resource"    : "source/resource",
-    "translation" : "source/translation",
-    "type"        : "contribution"
+  "provides": {
+    "namespace": "uploadwidget",
+    "encoding": "utf-8",
+    "class": "source/class",
+    "resource": "source/resource",
+    "translation": "source/translation"
+  },
+  "$schema": "https://raw.githubusercontent.com/qooxdoo/qooxdoo-compiler/master/source/resource/qx/tool/schema/Manifest-1-0-0.json",
+  "requires": {
+    "@qooxdoo/compiler": "^1.0.0-beta.20190725-1034",
+    "@qooxdoo/framework": "^6.0.0-beta-20190723-1841"
   }
 }
-

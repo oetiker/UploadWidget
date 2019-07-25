@@ -5,15 +5,11 @@
       "outputPath": "source-output"
     },
     {
-      "type": "hybrid",
-      "outputPath": "hybrid-output"
-    },
-    {
       "type": "build",
       "outputPath": "build-output"
     }
   ],
-  "defaultTarget": "hybrid",
+  "defaultTarget": "source",
   "serve": {
     "listenPort": 8744
   },
@@ -29,12 +25,7 @@
     {
       "class": "uploaddemo.Application",
       "theme": "qx.theme.Simple",
-      "name": "uploaddemo",
-      "writeIndexHtmlToRoot": true
+      "name": "uploaddemo"
     }
-  ],
-  "libraries": [
-    "./node_modules/qooxdoo-sdk/framework",
-    "."
   ]
 }
