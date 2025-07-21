@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "@qooxdoo/compiler": "^1.0.0-beta.20190725-1034"
+    "@qooxdoo/compiler": "^1.0.5"
   }
 }
